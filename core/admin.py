@@ -1,3 +1,7 @@
 from django.contrib import admin
+from .models import DiagnosticTest, Question, StudentAnswer
 
-# Register your models here.
+admin.site.register(DiagnosticTest)
+admin.site.register(Question)
+admin.site.register(StudentAnswer)
+
