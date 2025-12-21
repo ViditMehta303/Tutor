@@ -1,0 +1,19 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Submitted</title>
+  </head>
+  <body>
+    <h1>Diagnostic Test Submitted ✅</h1>
+
+    {% if result %}
+      <p><strong>Score:</strong> {{ result.correct_answers }} / {{ result.total_questions }}</p>
+      <p><strong>Percent:</strong> {{ result.percent_score }}%</p>
+    {% else %}
+      <p>No result found yet.</p>
+    {% endif %}
+
+    <p><a href="/diagnostic/start/">Take Again</a></p>
+    <p><a href="/accounts/student/dashboard/">Back to Dashboard</a></p>
+  </body>
+</html>

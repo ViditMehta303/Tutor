@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Tutor Dashboard</title>
+  </head>
+  <body>
+    <h1>Tutor Dashboard: Students</h1>
+
+    {% if rows %}
+      <ul>
+        {% for row in rows %}
+          <li>
+            <a href="/tutor/students/{{ row.student.id }}/">
+              {{ row.student.user.username }}
+            </a>
+
+            {% if row.latest %}
+              - {{ row.latest.percent_score }}%
+            {% else %}
+              - No test yet
+            {% endif %}
+          </li>
+        {% endfor %}
+      </ul>
+    {% else %}
+      <p>No students found.</p>
+      <p>Make sure students registered and have a StudentProfile.</p>
+    {% endif %}
+  </body>
+</html>

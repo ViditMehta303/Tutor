@@ -26,3 +26,19 @@ class StudentAnswer(models.Model):
     student = models.ForeignKey(StudentProfile, on_delete=models.CASCADE)
     question = models.ForeignKey(Question, on_delete=models.CASCADE)
     selected_option = models.CharField(max_length=1)
+    is_correct = models.BooleanField(default=False)  # NEW
+
+    def __str__(self):
+        return f"{self.student.user.username} - Q{self.question.id}: {self.selected_option}"
+
+
+class DiagnosticResult(models.Model):
+    student = models.ForeignKey(StudentProfile, on_delete=models.CASCADE)
+    test = models.ForeignKey(DiagnosticTest, on_delete=models.CASCADE)
+    total_questions = models.PositiveSmallIntegerField()
+    correct_answers = models.PositiveSmallIntegerField()
+    percent_score = models.FloatField()
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    def __str__(self):
+        return f"{self.student.user.username} - {self.test.title} - {self.percent_score}%"

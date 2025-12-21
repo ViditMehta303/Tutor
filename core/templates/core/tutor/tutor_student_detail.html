@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Student Detail</title>
+  </head>
+  <body>
+    <h1>Student: {{ student.user.username }}</h1>
+    <p>Grade: {{ student.grade_level }}</p>
+
+    <h2>Results</h2>
+    <ul>
+      {% for r in results %}
+        <li>{{ r.created_at }}: {{ r.correct_answers }}/{{ r.total_questions }} ({{ r.percent_score }}%)</li>
+      {% empty %}
+        <li>No results yet.</li>
+      {% endfor %}
+    </ul>
+
+    {% if latest %}
+      <h2>Latest Attempt Answers</h2>
+      <ul>
+        {% for a in answers %}
+          <li>
+            <strong>{{ a.question.text }}</strong><br>
+            Selected: {{ a.selected_option }} |
+            Correct: {{ a.question.correct_option }} |
+            {% if a.is_correct %}✅{% else %}❌{% endif %}
+          </li>
+          <hr>
+        {% empty %}
+          <li>No answers found.</li>
+        {% endfor %}
+      </ul>
+    {% endif %}
+
+    <p><a href="/tutor/students/">Back to Students</a></p>
+  </body>
+</html>
