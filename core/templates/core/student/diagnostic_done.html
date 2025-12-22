@@ -1,19 +1,24 @@
 <!DOCTYPE html>
 <html>
   <head>
-    <title>Submitted</title>
+    <title>Diagnostic Submitted</title>
   </head>
   <body>
     <h1>Diagnostic Test Submitted ✅</h1>
 
     {% if result %}
       <p><strong>Score:</strong> {{ result.correct_answers }} / {{ result.total_questions }}</p>
-      <p><strong>Percent:</strong> {{ result.percent_score }}%</p>
-    {% else %}
-      <p>No result found yet.</p>
+      <p><strong>Percentage:</strong> {{ result.percent_score }}%</p>
     {% endif %}
 
-    <p><a href="/diagnostic/start/">Take Again</a></p>
-    <p><a href="/accounts/student/dashboard/">Back to Dashboard</a></p>
+    <p>
+      Your diagnostic assessment has been recorded.
+      <br>
+      The tutor will review your results before your demo class.
+    </p>
+
+    <p>
+      <a href="/accounts/student/dashboard/">Back to Dashboard</a>
+    </p>
   </body>
 </html>

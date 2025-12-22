@@ -6,6 +6,23 @@
   <body>
     <h1>Student: {{ student.user.username }}</h1>
     <p>Grade: {{ student.grade_level }}</p>
+    <h2>Weak Areas (Topic Breakdown)</h2>
+
+{% if topic_rows %}
+  <ul>
+    {% for t in topic_rows %}
+      <li>
+        <strong>{{ t.topic }}</strong>:
+        {{ t.correct }}/{{ t.total }} ({{ t.percent }}%)
+      </li>
+    {% endfor %}
+  </ul>
+
+  <p><strong>Primary weak area:</strong> {{ topic_rows.0.topic }}</p>
+{% else %}
+  <p>No diagnostic breakdown available yet.</p>
+{% endif %}
+
 
     <h2>Results</h2>
     <ul>

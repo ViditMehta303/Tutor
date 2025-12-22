@@ -10,16 +10,35 @@ class DiagnosticTest(models.Model):
 
 
 class Question(models.Model):
+    TOPIC_ARITHMETIC = "ARITH"
+    TOPIC_FRACTIONS = "FRAC"
+    TOPIC_ALGEBRA = "ALGB"
+    TOPIC_GEOMETRY = "GEOM"
+    TOPIC_WORD_PROBLEMS = "WORD"
+
+    TOPIC_CHOICES = [
+        (TOPIC_ARITHMETIC, "Arithmetic"),
+        (TOPIC_FRACTIONS, "Fractions"),
+        (TOPIC_ALGEBRA, "Algebra"),
+        (TOPIC_GEOMETRY, "Geometry"),
+        (TOPIC_WORD_PROBLEMS, "Word Problems"),
+    ]
+
     test = models.ForeignKey(DiagnosticTest, on_delete=models.CASCADE)
-    text = models.TextField()
-    option_a = models.CharField(max_length=200)
-    option_b = models.CharField(max_length=200)
-    option_c = models.CharField(max_length=200)
-    option_d = models.CharField(max_length=200)
+    text = models.CharField(max_length=255)
+
+    option_a = models.CharField(max_length=255)
+    option_b = models.CharField(max_length=255)
+    option_c = models.CharField(max_length=255)
+    option_d = models.CharField(max_length=255)
+
     correct_option = models.CharField(max_length=1)
 
+    topic = models.CharField(max_length=5, choices=TOPIC_CHOICES, default=TOPIC_ARITHMETIC)
+
     def __str__(self):
-        return self.text[:50]
+        return self.text
+
 
 
 class StudentAnswer(models.Model):
