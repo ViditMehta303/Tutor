@@ -6,6 +6,16 @@
   <body>
     <h1>Student: {{ student.user.username }}</h1>
     <p>Grade: {{ student.grade_level }}</p>
+    <h2>Tutor Recommendation</h2>
+
+{% if recommendation %}
+  <p><strong>Overall Level:</strong> {{ recommendation.level_label }} ({{ recommendation.overall_percent }}%)</p>
+  <p><strong>Suggested Pace:</strong> {{ recommendation.pace_label }}</p>
+  <p><strong>Plan for Demo Class:</strong> {{ recommendation.focus_message }}</p>
+{% else %}
+  <p>No diagnostic result available yet.</p>
+{% endif %}
+
     <h2>Weak Areas (Topic Breakdown)</h2>
 
 {% if topic_rows %}

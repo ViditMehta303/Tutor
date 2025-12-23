@@ -16,15 +16,17 @@
 
             {% if row.latest %}
               - {{ row.latest.percent_score }}%
+              {% if row.weakest_topic %}
+                - Weakest: {{ row.weakest_topic }}
+              {% endif %}
             {% else %}
-              - No test yet
+              - No diagnostic yet
             {% endif %}
           </li>
         {% endfor %}
       </ul>
     {% else %}
       <p>No students found.</p>
-      <p>Make sure students registered and have a StudentProfile.</p>
     {% endif %}
   </body>
 </html>
