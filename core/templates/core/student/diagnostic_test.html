@@ -1,27 +1,72 @@
-<!DOCTYPE html>
-<html>
-  <head>
-    <title>Math Diagnostic</title>
-  </head>
-  <body>
-    <h1>Math Diagnostic Test</h1>
+{% extends "core/student/base_student.html" %}
+{% block title %}Diagnostic Test{% endblock %}
 
-    <form method="post">
+{% block content %}
+<div class="row justify-content-center">
+  <div class="col-lg-8">
+
+    <div class="card shadow-sm mb-3">
+      <div class="card-body">
+        <h1 class="h4 mb-1">Math Diagnostic</h1>
+        <p class="text-muted mb-0">
+          Answer honestly. This helps your tutor understand your level before the demo class.
+        </p>
+      </div>
+    </div>
+
+    <form method="post" class="card shadow-sm">
       {% csrf_token %}
+      <div class="card-body">
 
-      {% for q in questions %}
-        <p><strong>{{ forloop.counter }}. {{ q.text }}</strong></p>
+        {% for q in questions %}
+          <div class="mb-4">
+            <div class="d-flex justify-content-between align-items-center">
+              <h2 class="h6 mb-2">Question {{ forloop.counter }}</h2>
+              {% if q.topic %}
+                <span class="badge text-bg-secondary">{{ q.get_topic_display }}</span>
+              {% endif %}
+            </div>
 
-        <label><input type="radio" name="question_{{ q.id }}" value="A"> {{ q.option_a }}</label><br>
-        <label><input type="radio" name="question_{{ q.id }}" value="B"> {{ q.option_b }}</label><br>
-        <label><input type="radio" name="question_{{ q.id }}" value="C"> {{ q.option_c }}</label><br>
-        <label><input type="radio" name="question_{{ q.id }}" value="D"> {{ q.option_d }}</label><br>
-        <hr>
-      {% endfor %}
+            <p class="mb-2 fw-semibold">{{ q.text }}</p>
 
-      <button type="submit">Submit Test</button>
+            <div class="list-group">
+              <label class="list-group-item">
+                <input class="form-check-input me-2" type="radio" name="question_{{ q.id }}" value="A" required>
+                A) {{ q.option_a }}
+              </label>
+
+              <label class="list-group-item">
+                <input class="form-check-input me-2" type="radio" name="question_{{ q.id }}" value="B">
+                B) {{ q.option_b }}
+              </label>
+
+              <label class="list-group-item">
+                <input class="form-check-input me-2" type="radio" name="question_{{ q.id }}" value="C">
+                C) {{ q.option_c }}
+              </label>
+
+              <label class="list-group-item">
+                <input class="form-check-input me-2" type="radio" name="question_{{ q.id }}" value="D">
+                D) {{ q.option_d }}
+              </label>
+            </div>
+          </div>
+          <hr>
+        {% endfor %}
+
+        <div class="d-grid">
+          <button class="btn btn-dark btn-lg" type="submit">
+            Submit Diagnostic
+          </button>
+        </div>
+
+        <p class="text-muted small mt-3 mb-0">
+          This diagnostic can only be submitted once.
+        </p>
+
+      </div>
     </form>
 
-    <p><a href="/accounts/student/dashboard/">Back to Dashboard</a></p>
-  </body>
-</html>
+  </div>
+</div>
+{% endblock %}

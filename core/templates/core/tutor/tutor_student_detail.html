@@ -1,65 +1,93 @@
-<!DOCTYPE html>
-<html>
-  <head>
-    <title>Student Detail</title>
-  </head>
-  <body>
-    <h1>Student: {{ student.user.username }}</h1>
-    <p>Grade: {{ student.grade_level }}</p>
-    <h2>Tutor Recommendation</h2>
+{% extends "core/student/base_student.html" %}
+{% block title %}Student Detail{% endblock %}
 
-{% if recommendation %}
-  <p><strong>Overall Level:</strong> {{ recommendation.level_label }} ({{ recommendation.overall_percent }}%)</p>
-  <p><strong>Suggested Pace:</strong> {{ recommendation.pace_label }}</p>
-  <p><strong>Plan for Demo Class:</strong> {{ recommendation.focus_message }}</p>
-{% else %}
-  <p>No diagnostic result available yet.</p>
-{% endif %}
+{% block content %}
+<div class="mb-3">
+  <a class="btn btn-sm btn-outline-secondary" href="/tutor/students/">&larr; Back</a>
+</div>
 
-    <h2>Weak Areas (Topic Breakdown)</h2>
+<div class="row g-3">
+  <div class="col-lg-4">
+    <div class="card shadow-sm">
+      <div class="card-body">
+        <h1 class="h5 mb-1">{{ student.user.username }}</h1>
+        <div class="text-muted">Grade: {{ student.grade_level }}</div>
 
-{% if topic_rows %}
-  <ul>
-    {% for t in topic_rows %}
-      <li>
-        <strong>{{ t.topic }}</strong>:
-        {{ t.correct }}/{{ t.total }} ({{ t.percent }}%)
-      </li>
-    {% endfor %}
-  </ul>
-
-  <p><strong>Primary weak area:</strong> {{ topic_rows.0.topic }}</p>
-{% else %}
-  <p>No diagnostic breakdown available yet.</p>
-{% endif %}
-
-
-    <h2>Results</h2>
-    <ul>
-      {% for r in results %}
-        <li>{{ r.created_at }}: {{ r.correct_answers }}/{{ r.total_questions }} ({{ r.percent_score }}%)</li>
-      {% empty %}
-        <li>No results yet.</li>
-      {% endfor %}
-    </ul>
-
-    {% if latest %}
-      <h2>Latest Attempt Answers</h2>
-      <ul>
-        {% for a in answers %}
-          <li>
-            <strong>{{ a.question.text }}</strong><br>
-            Selected: {{ a.selected_option }} |
-            Correct: {{ a.question.correct_option }} |
-            {% if a.is_correct %}✅{% else %}❌{% endif %}
-          </li>
+        {% if latest %}
           <hr>
-        {% empty %}
-          <li>No answers found.</li>
-        {% endfor %}
-      </ul>
-    {% endif %}
+          <div class="fw-semibold">Latest Result</div>
+          <div>{{ latest.correct_answers }}/{{ latest.total_questions }}</div>
+          <div>{{ latest.percent_score }}%</div>
+        {% else %}
+          <hr>
+          <div class="text-muted">No diagnostic submitted yet.</div>
+        {% endif %}
+      </div>
+    </div>
 
-    <p><a href="/tutor/students/">Back to Students</a></p>
-  </body>
-</html>
+    <div class="card shadow-sm mt-3">
+      <div class="card-body">
+        <h2 class="h6">Tutor Recommendation</h2>
+        {% if recommendation %}
+          <div><strong>Overall Level:</strong> {{ recommendation.level_label }} ({{ recommendation.overall_percent }}%)</div>
+          <div><strong>Pace:</strong> {{ recommendation.pace_label }}</div>
+          <div class="mt-2"><strong>Demo Plan:</strong> {{ recommendation.focus_message }}</div>
+        {% else %}
+          <div class="text-muted">No recommendation available.</div>
+        {% endif %}
+      </div>
+    </div>
+  </div>
+
+  <div class="col-lg-8">
+    <div class="card shadow-sm mb-3">
+      <div class="card-body">
+        <h2 class="h6 mb-2">Weak Areas (Topic Breakdown)</h2>
+
+        {% if topic_rows %}
+          <div class="list-group">
+            {% for t in topic_rows %}
+              <div class="list-group-item d-flex justify-content-between align-items-center">
+                <div class="fw-semibold">{{ t.topic }}</div>
+                <div class="text-muted">{{ t.correct }}/{{ t.total }} ({{ t.percent }}%)</div>
+              </div>
+            {% endfor %}
+          </div>
+        {% else %}
+          <div class="text-muted">No topic breakdown available yet.</div>
+        {% endif %}
+      </div>
+    </div>
+
+    <div class="card shadow-sm">
+      <div class="card-body">
+        <h2 class="h6 mb-2">Latest Attempt Answers</h2>
+
+        {% if answers %}
+          {% for a in answers %}
+            <div class="mb-3">
+              <div class="d-flex justify-content-between">
+                <div class="fw-semibold">{{ a.question.text }}</div>
+                <div>
+                  {% if a.is_correct %}
+                    <span class="badge text-bg-success">Correct</span>
+                  {% else %}
+                    <span class="badge text-bg-danger">Incorrect</span>
+                  {% endif %}
+                </div>
+              </div>
+
+              <div class="text-muted small">
+                Selected: {{ a.selected_option }} | Correct: {{ a.question.correct_option }}
+              </div>
+            </div>
+            <hr>
+          {% endfor %}
+        {% else %}
+          <div class="text-muted">No answers recorded.</div>
+        {% endif %}
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}

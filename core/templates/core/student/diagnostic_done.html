@@ -1,24 +1,31 @@
-<!DOCTYPE html>
-<html>
-  <head>
-    <title>Diagnostic Submitted</title>
-  </head>
-  <body>
-    <h1>Diagnostic Test Submitted ✅</h1>
+{% extends "core/student/base_student.html" %}
+{% block title %}Submitted{% endblock %}
 
-    {% if result %}
-      <p><strong>Score:</strong> {{ result.correct_answers }} / {{ result.total_questions }}</p>
-      <p><strong>Percentage:</strong> {{ result.percent_score }}%</p>
-    {% endif %}
+{% block content %}
+<div class="row justify-content-center">
+  <div class="col-lg-7">
 
-    <p>
-      Your diagnostic assessment has been recorded.
-      <br>
-      The tutor will review your results before your demo class.
-    </p>
+    <div class="card shadow-sm">
+      <div class="card-body">
+        <h1 class="h4">Diagnostic Submitted ✅</h1>
+        <p class="text-muted">
+          Your tutor will review your results before your demo class.
+        </p>
 
-    <p>
-      <a href="/accounts/student/dashboard/">Back to Dashboard</a>
-    </p>
-  </body>
-</html>
+        {% if result %}
+          <div class="alert alert-success">
+            <div class="fw-semibold">Result Recorded</div>
+            <div>Score: {{ result.correct_answers }} / {{ result.total_questions }}</div>
+            <div>Percent: {{ result.percent_score }}%</div>
+          </div>
+        {% endif %}
+
+        <a class="btn btn-outline-dark" href="/accounts/student/dashboard/">
+          Back to Dashboard
+        </a>
+      </div>
+    </div>
+
+  </div>
+</div>
+{% endblock %}
