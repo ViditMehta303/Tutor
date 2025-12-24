@@ -1,0 +1,110 @@
+/* core/static/core/css/main.css */
+
+:root {
+  --bg: #f7f7fb;
+  --card: #ffffff;
+  --text: #111827;
+  --muted: #6b7280;
+  --border: #e5e7eb;
+  --primary: #2563eb;
+  --primary-dark: #1d4ed8;
+  --success: #16a34a;
+}
+
+* { box-sizing: border-box; }
+
+body {
+  margin: 0;
+  font-family: system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
+  background: var(--bg);
+  color: var(--text);
+}
+
+a { color: var(--primary); text-decoration: none; }
+a:hover { text-decoration: underline; }
+
+.navbar {
+  background: var(--card);
+  border-bottom: 1px solid var(--border);
+  padding: 14px 18px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.brand {
+  font-weight: 700;
+  letter-spacing: 0.2px;
+}
+
+.navlinks a {
+  margin-left: 14px;
+  font-weight: 600;
+  color: var(--text);
+}
+
+.container {
+  max-width: 980px;
+  margin: 22px auto;
+  padding: 0 16px;
+}
+
+.card {
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 18px;
+  box-shadow: 0 1px 10px rgba(0,0,0,0.03);
+}
+
+h1 { margin: 0 0 12px; font-size: 32px; }
+h2 { margin: 0 0 10px; font-size: 22px; color: var(--text); }
+p { color: var(--muted); margin-top: 6px; }
+
+.btn {
+  display: inline-block;
+  background: var(--primary);
+  color: white !important;
+  border-radius: 10px;
+  padding: 10px 14px;
+  font-weight: 700;
+  border: none;
+  cursor: pointer;
+}
+
+.btn:hover { background: var(--primary-dark); text-decoration: none; }
+
+.badge-success {
+  display: inline-block;
+  padding: 4px 10px;
+  background: #dcfce7;
+  color: var(--success);
+  border-radius: 999px;
+  font-weight: 700;
+  font-size: 12px;
+}
+
+.table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 12px;
+  font-size: 14px;
+}
+
+.table th, .table td {
+  padding: 10px 10px;
+  border-bottom: 1px solid var(--border);
+  text-align: left;
+}
+
+.table th {
+  color: #374151;
+  font-weight: 800;
+  font-size: 13px;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.table tr:hover { background: #f9fafb; }
+
+.small { font-size: 13px; color: var(--muted); }
