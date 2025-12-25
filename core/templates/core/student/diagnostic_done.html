@@ -2,30 +2,23 @@
 {% block title %}Submitted{% endblock %}
 
 {% block content %}
-<div class="row justify-content-center">
-  <div class="col-lg-7">
+<div class="card">
+  <h1>Diagnostic Submitted</h1>
+  <p>
+    Thanks. Your tutor will review your answers before your demo class.
+  </p>
 
-    <div class="card shadow-sm">
-      <div class="card-body">
-        <h1 class="h4">Diagnostic Submitted ✅</h1>
-        <p class="text-muted">
-          Your tutor will review your results before your demo class.
-        </p>
-
-        {% if result %}
-          <div class="alert alert-success">
-            <div class="fw-semibold">Result Recorded</div>
-            <div>Score: {{ result.correct_answers }} / {{ result.total_questions }}</div>
-            <div>Percent: {{ result.percent_score }}%</div>
-          </div>
-        {% endif %}
-
-        <a class="btn btn-outline-dark" href="/accounts/student/dashboard/">
-          Back to Dashboard
-        </a>
-      </div>
+  {% if result %}
+    <div style="margin-top: 14px;" class="card">
+      <h2 style="margin-bottom: 6px;">Result Recorded</h2>
+      <div class="small">Score: <strong>{{ result.correct_answers }}</strong> / {{ result.total_questions }}</div>
+      <div class="small">Percent: <strong>{{ result.percent_score }}%</strong></div>
+      <div style="margin-top: 8px;" class="badge-success">Saved successfully</div>
     </div>
+  {% endif %}
 
+  <div style="margin-top: 14px;">
+    <a class="btn" href="/accounts/student/dashboard/">Go to Dashboard</a>
   </div>
 </div>
 {% endblock %}

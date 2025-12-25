@@ -123,3 +123,7 @@ SECURE_SSL_REDIRECT = False  # Turn TRUE only after HTTPS deploy
 # DEFAULTS
 # --------------------------------------------------
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
+
+LOGIN_URL = "/accounts/login/"
+LOGIN_REDIRECT_URL = "/accounts/student/dashboard/"
+LOGOUT_REDIRECT_URL = "/accounts/login/"

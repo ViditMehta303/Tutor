@@ -1,19 +1,22 @@
-<!DOCTYPE html>
-<html>
-  <head>
-    <title>Student Dashboard</title>
-  </head>
-  <body>
-    <h1>Student Dashboard</h1>
-    <p>Welcome, {{ request.user.username }}!</p>
-    <p>Your grade level: <strong>{{ profile.grade_level }}</strong></p>
-    <p>
-  <a href="/diagnostic/start/">Start Math Diagnostic Test</a>
-</p>
+{% extends "core/student/base_student.html" %}
+{% block title %}Dashboard{% endblock %}
 
+{% block content %}
+<div class="card">
+  <h1>Student Dashboard</h1>
+  <p>Welcome. Complete the diagnostic if you have not done it yet.</p>
+</div>
 
-    
+<br>
 
-    <p><a href="/">Home</a></p>
-  </body>
-</html>
+<div class="card">
+  <h2>Next Step</h2>
+  <p class="small">
+    The diagnostic helps your tutor place you at the right level for your demo class.
+  </p>
+
+  <div style="margin-top: 12px;">
+    <a class="btn" href="/diagnostic/start/">Start Diagnostic</a>
+  </div>
+</div>
+{% endblock %}

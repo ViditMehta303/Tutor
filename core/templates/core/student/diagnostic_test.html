@@ -1,72 +1,66 @@
-{% extends "core/tutor/base_tutor.html" %}
-{% block title %}Diagnostic Test{% endblock %}
+{% extends "core/student/base_student.html" %}
+{% block title %}Math Diagnostic{% endblock %}
 
 {% block content %}
-<div class="row justify-content-center">
-  <div class="col-lg-8">
+<div class="card">
+  <h1>Math Diagnostic</h1>
+  <p>
+    This short test helps your tutor understand your current level before your demo class.
+    Please answer honestly.
+  </p>
+</div>
 
-    <div class="card shadow-sm mb-3">
-      <div class="card-body">
-        <h1 class="h4 mb-1">Math Diagnostic</h1>
-        <p class="text-muted mb-0">
-          Answer honestly. This helps your tutor understand your level before the demo class.
-        </p>
+<br>
+
+<form method="post" class="card">
+  {% csrf_token %}
+
+  <h2>Questions</h2>
+  <p class="small">Choose one option for each question.</p>
+
+  <br>
+
+  {% for q in questions %}
+    <div class="card" style="border: 1px solid var(--border); box-shadow: none; margin-bottom: 14px;">
+      <div style="display:flex; justify-content: space-between; align-items: center;">
+        <div class="small"><strong>Question {{ forloop.counter }}</strong></div>
+        {% if q.topic %}
+          <div class="small" style="padding: 4px 10px; border-radius: 999px; border: 1px solid var(--border); background: #fafafa;">
+            {{ q.get_topic_display }}
+          </div>
+        {% endif %}
+      </div>
+
+      <div style="margin-top: 10px; font-weight: 800;">
+        {{ q.text }}
+      </div>
+
+      <div style="margin-top: 10px;">
+        <label style="display:block; padding: 10px; border:1px solid var(--border); border-radius: 10px; margin-bottom: 8px; cursor:pointer;">
+          <input type="radio" name="question_{{ q.id }}" value="A" required> A) {{ q.option_a }}
+        </label>
+
+        <label style="display:block; padding: 10px; border:1px solid var(--border); border-radius: 10px; margin-bottom: 8px; cursor:pointer;">
+          <input type="radio" name="question_{{ q.id }}" value="B"> B) {{ q.option_b }}
+        </label>
+
+        <label style="display:block; padding: 10px; border:1px solid var(--border); border-radius: 10px; margin-bottom: 8px; cursor:pointer;">
+          <input type="radio" name="question_{{ q.id }}" value="C"> C) {{ q.option_c }}
+        </label>
+
+        <label style="display:block; padding: 10px; border:1px solid var(--border); border-radius: 10px; cursor:pointer;">
+          <input type="radio" name="question_{{ q.id }}" value="D"> D) {{ q.option_d }}
+        </label>
       </div>
     </div>
+  {% endfor %}
 
-    <form method="post" class="card shadow-sm">
-      {% csrf_token %}
-      <div class="card-body">
-
-        {% for q in questions %}
-          <div class="mb-4">
-            <div class="d-flex justify-content-between align-items-center">
-              <h2 class="h6 mb-2">Question {{ forloop.counter }}</h2>
-              {% if q.topic %}
-                <span class="badge text-bg-secondary">{{ q.get_topic_display }}</span>
-              {% endif %}
-            </div>
-
-            <p class="mb-2 fw-semibold">{{ q.text }}</p>
-
-            <div class="list-group">
-              <label class="list-group-item">
-                <input class="form-check-input me-2" type="radio" name="question_{{ q.id }}" value="A" required>
-                A) {{ q.option_a }}
-              </label>
-
-              <label class="list-group-item">
-                <input class="form-check-input me-2" type="radio" name="question_{{ q.id }}" value="B">
-                B) {{ q.option_b }}
-              </label>
-
-              <label class="list-group-item">
-                <input class="form-check-input me-2" type="radio" name="question_{{ q.id }}" value="C">
-                C) {{ q.option_c }}
-              </label>
-
-              <label class="list-group-item">
-                <input class="form-check-input me-2" type="radio" name="question_{{ q.id }}" value="D">
-                D) {{ q.option_d }}
-              </label>
-            </div>
-          </div>
-          <hr>
-        {% endfor %}
-
-        <div class="d-grid">
-          <button class="btn btn-dark btn-lg" type="submit">
-            Submit Diagnostic
-          </button>
-        </div>
-
-        <p class="text-muted small mt-3 mb-0">
-          This diagnostic can only be submitted once.
-        </p>
-
-      </div>
-    </form>
-
+  <div style="margin-top: 12px;">
+    <button class="btn" type="submit">Submit Diagnostic</button>
   </div>
-</div>
+
+  <p class="small" style="margin-top: 12px;">
+    This diagnostic can only be submitted once.
+  </p>
+</form>
 {% endblock %}
