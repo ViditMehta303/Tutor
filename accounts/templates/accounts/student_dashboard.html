@@ -4,19 +4,58 @@
 {% block content %}
 <div class="card">
   <h1>Student Dashboard</h1>
-  <p>Welcome. Complete the diagnostic if you have not done it yet.</p>
+  <p>Welcome. This dashboard helps you complete the onboarding diagnostic for your demo class.</p>
+</div>
+
+<br>
+
+<div style="display:grid; grid-template-columns: 1fr 1fr; gap: 14px;">
+  <div class="card">
+    <h2>Diagnostic Status</h2>
+
+    {% if latest %}
+      <p class="small">Submitted ✅</p>
+      <div style="margin-top: 10px;">
+        <div class="small">Score</div>
+        <div style="font-size: 34px; font-weight: 900;">{{ latest.percent_score }}%</div>
+        <div class="small">({{ latest.correct_answers }}/{{ latest.total_questions }})</div>
+      </div>
+
+      <div style="margin-top: 12px;">
+        <a class="btn" href="/diagnostic/done/">View Submission</a>
+      </div>
+    {% else %}
+      <p class="small">Not submitted yet</p>
+      <p>Complete the diagnostic so your tutor can understand your level.</p>
+
+      <div style="margin-top: 12px;">
+        <a class="btn" href="/diagnostic/start/">Start Diagnostic</a>
+      </div>
+    {% endif %}
+  </div>
+
+  <div class="card">
+    <h2>What happens next?</h2>
+    <p class="small">
+      Your tutor reviews your diagnostic results to plan the best demo class for you.
+    </p>
+
+    <div style="margin-top: 12px;">
+      <ul class="small" style="margin:0; padding-left: 18px;">
+        <li>We identify your strengths and weak areas.</li>
+        <li>Your demo class is planned at your level.</li>
+        <li>You get a clear learning plan after the demo.</li>
+      </ul>
+    </div>
+  </div>
 </div>
 
 <br>
 
 <div class="card">
-  <h2>Next Step</h2>
+  <h2>Need help?</h2>
   <p class="small">
-    The diagnostic helps your tutor place you at the right level for your demo class.
+    If you face any issues while registering or submitting the diagnostic, contact the tutoring centre.
   </p>
-
-  <div style="margin-top: 12px;">
-    <a class="btn" href="/diagnostic/start/">Start Diagnostic</a>
-  </div>
 </div>
 {% endblock %}

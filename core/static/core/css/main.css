@@ -195,3 +195,8 @@ p { color: var(--muted); margin-top: 6px; }
   font-weight: 700;
   text-decoration: none;
 }
+
+@media (max-width: 760px) {
+  .container { padding: 0 12px; }
+  h1 { font-size: 26px; }
+}

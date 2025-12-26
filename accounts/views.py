@@ -3,54 +3,64 @@ from django.contrib.auth.decorators import login_required
 from django.contrib.auth.models import User
 from django.shortcuts import render, redirect
 
-from .forms import StudentRegisterForm
-from .models import StudentProfile
-from .forms_grade import GradeSelectForm
+from accounts.models import StudentProfile
+from core.models import DiagnosticResult
 
 
 def register_student(request):
+    """
+    Simple student registration.
+    After register -> login user -> go to grade selection page.
+    """
     if request.method == "POST":
-        form = StudentRegisterForm(request.POST)
-        if form.is_valid():
-            username = form.cleaned_data["username"]
-            email = form.cleaned_data["email"]
-            password = form.cleaned_data["password1"]
+        username = request.POST.get("username", "").strip()
+        password = request.POST.get("password", "").strip()
 
-            user = User.objects.create_user(username=username, email=email, password=password)
+        if not username or not password:
+            return render(request, "accounts/register.html", {
+                "error": "Username and password are required."
+            })
 
-            # Create blank student profile
-            StudentProfile.objects.create(user=user)
+        if User.objects.filter(username=username).exists():
+            return render(request, "accounts/register.html", {
+                "error": "That username is already taken."
+            })
 
-            # Auto-login after register
-            login(request, user)
+        user = User.objects.create_user(username=username, password=password)
+        StudentProfile.objects.create(user=user)
 
-            # Send student to grade selection
-            return redirect("select_grade")
-    else:
-        form = StudentRegisterForm()
+        login(request, user)
+        return redirect("select_grade")
 
-    return render(request, "accounts/register_student.html", {"form": form})
+    return render(request, "accounts/register.html")
+
 
 @login_required
 def select_grade(request):
-    profile, created = StudentProfile.objects.get_or_create(user=request.user)
+    student_profile = StudentProfile.objects.get(user=request.user)
 
     if request.method == "POST":
-        form = GradeSelectForm(request.POST)
-        if form.is_valid():
-            profile.grade_level = int(form.cleaned_data["grade_level"])
-            profile.save()
-            return redirect("student_dashboard")
-    else:
-        form = GradeSelectForm()
+        grade_level = request.POST.get("grade_level")
+        student_profile.grade_level = grade_level
+        student_profile.save()
+        return redirect("student_dashboard")
 
-    return render(request, "accounts/select_grade.html", {"form": form})
+    return render(request, "accounts/select_grade.html", {"student": student_profile})
+
 
 @login_required
 def student_dashboard(request):
-    profile, created = StudentProfile.objects.get_or_create(user=request.user)
+    student_profile = StudentProfile.objects.get(user=request.user)
 
-    if profile.grade_level is None:
-        return redirect("select_grade")
+    latest_result = (
+        DiagnosticResult.objects
+        .filter(student=student_profile)   # ✅ FIX IS HERE
+        .order_by("-created_at")
+        .first()
+    )
 
-    return render(request, "accounts/student_dashboard.html", {"profile": profile})
+    context = {
+        "student": student_profile,
+        "latest_result": latest_result,
+    }
+    return render(request, "core/student/dashboard.html", context)
