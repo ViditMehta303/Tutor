@@ -1,0 +1,34 @@
+{% extends "core/student/base_student.html" %}
+
+{% block title %}Start Diagnostic{% endblock %}
+
+{% block content %}
+<div class="auth-wrap">
+  <div class="auth-card">
+    <div class="brand-badge">R</div>
+
+    <h1 class="auth-title">Math Diagnostic</h1>
+    <p class="auth-subtitle">
+      Answer honestly. This helps your tutor understand your level before the demo class.
+    </p>
+
+    <div class="card" style="margin-top: 14px;">
+      <div class="card-body" style="padding: 14px;">
+        <ul class="clean-list">
+          <li>⏱️ Takes ~5 minutes</li>
+          <li>✅ Multiple-choice</li>
+          <li>🎯 Helps identify weak areas</li>
+        </ul>
+      </div>
+    </div>
+
+    <div style="margin-top: 16px;">
+      <a class="btn-primary w-100" href="{% url 'start_diagnostic' %}">Start Diagnostic</a>
+    </div>
+
+    <div class="auth-footer">
+      Want to go back? <a class="link" href="{% url 'student_dashboard' %}">Dashboard</a>
+    </div>
+  </div>
+</div>
+{% endblock %}

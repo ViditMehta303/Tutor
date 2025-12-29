@@ -4,19 +4,31 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>{% block title %}Tutor{% endblock %}</title>
+  <title>{% block title %}Tutor{% endblock %} | Prepro</title>
   <link rel="stylesheet" href="{% static 'core/css/main.css' %}">
 </head>
 <body>
-  <div class="navbar">
-    <div class="brand">Prepro • Tutor</div>
-    <div class="navlinks">
-      <a href="/tutor/students/">Students</a>
-    </div>
-  </div>
+  <div class="page">
+    <div class="navbar">
+      <div class="navbar-inner">
+        <div class="brand">
+          <div class="brand-badge">P</div>
+          <div>Prepro · Tutor</div>
+        </div>
 
-  <div class="container">
-    {% block content %}{% endblock %}
+        <div class="navlinks">
+          <a href="{% url 'tutor_students' %}"
+             class="{% if request.path|slice:':15' == '/tutor/students' %}active{% endif %}">
+            Students
+          </a>
+          <a href="{% url 'logout' %}">Logout</a>
+        </div>
+      </div>
+    </div>
+
+    <div class="container">
+      {% block content %}{% endblock %}
+    </div>
   </div>
 </body>
 </html>

@@ -1,26 +1,97 @@
-{% extends "core/auth/base_auth.html" %}
-{% block title %}Login{% endblock %}
-{% block subtitle %}Log in to continue{% endblock %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Login | R M Tutors</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
 
-{% block content %}
-<form method="post" class="auth-form">
-  {% csrf_token %}
+  <style>
+    body{
+      font-family: Arial, sans-serif;
+      background:#f4f6f8;
+      height:100vh;
+      margin:0;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+    }
+    .card{
+      background:#fff;
+      padding:32px;
+      width:100%;
+      max-width:420px;
+      border-radius:8px;
+      box-shadow:0 10px 25px rgba(0,0,0,0.08);
+    }
+    h1{ margin:0 0 8px 0; }
+    p{ margin:0 0 24px 0; color:#555; }
 
-  <div class="field">
-    <label>Username</label>
-    <input type="text" name="username" required>
+    label{ display:block; margin:0 0 6px 0; font-weight:bold; }
+    input{
+      width:100%;
+      padding:10px;
+      margin:0 0 16px 0;
+      border-radius:4px;
+      border:1px solid #ccc;
+      box-sizing:border-box;
+    }
+
+    .errorlist{ margin:0 0 12px 0; padding:0; color:#b91c1c; list-style:none; }
+    .nonfield{ margin-bottom:12px; color:#b91c1c; }
+
+    button{
+      width:100%;
+      padding:12px;
+      background:#2563eb;
+      color:#fff;
+      border:none;
+      border-radius:6px;
+      font-size:16px;
+      cursor:pointer;
+    }
+    button:hover{ background:#1e4ed8; }
+
+    .footer{
+      margin-top:16px;
+      text-align:center;
+      font-size:14px;
+    }
+    .footer a{
+      color:#2563eb;
+      text-decoration:none;
+      font-weight:bold;
+    }
+  </style>
+</head>
+<body>
+
+<div class="card">
+  <h1>Welcome to R M Tutors</h1>
+  <p>Login to your student or tutor portal.</p>
+
+  <form method="post">
+    {% csrf_token %}
+
+    {% if form.non_field_errors %}
+      <div class="nonfield">
+        {{ form.non_field_errors }}
+      </div>
+    {% endif %}
+
+    {% for field in form %}
+      {{ field.errors }}
+      <label for="{{ field.id_for_label }}">{{ field.label }}</label>
+      {{ field }}
+    {% endfor %}
+
+    <button type="submit">Login</button>
+  </form>
+
+  <div class="footer">
+    New student?
+    <a href="{% url 'register_student' %}">Create an account</a>
   </div>
+</div>
 
-  <div class="field">
-    <label>Password</label>
-    <input type="password" name="password" required>
-  </div>
-
-  <button class="btn-primary" type="submit">Login</button>
-
-  <div class="auth-footer">
-    Don’t have an account?
-    <a href="{% url 'register_student' %}">Register</a>
-  </div>
-</form>
-{% endblock %}
+</body>
+</html>

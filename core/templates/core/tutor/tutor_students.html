@@ -1,49 +1,63 @@
-{% extends "core/student/base_student.html" %}
+{% extends "core/tutor/base_tutor.html" %}
+
 {% block title %}Students{% endblock %}
 
 {% block content %}
-<div class="d-flex justify-content-between align-items-center mb-3">
-  <h1 class="h4 mb-0">Students</h1>
-  <span class="text-muted small">Diagnostic overview</span>
+<div class="page-header">
+  <div>
+    <h1 class="page-title">Students</h1>
+    <p class="page-subtitle">Diagnostic overview</p>
+  </div>
 </div>
 
-<div class="card shadow-sm">
-  <div class="card-body p-0">
-    <div class="table-responsive">
-      <table class="table table-striped mb-0 align-middle">
-        <thead class="table-light">
-          <tr>
-            <th>Student</th>
-            <th>Grade</th>
-            <th>Score</th>
-            <th>Weakest Topic</th>
-            <th></th>
-          </tr>
-        </thead>
-        <tbody>
-          {% for row in rows %}
-            <tr>
-              <td class="fw-semibold">{{ row.student.user.username }}</td>
-              <td>{{ row.student.grade_level }}</td>
+<div class="card">
+  <div class="table-wrap">
+    <table class="table">
+      <thead>
+        <tr>
+          <th>Student</th>
+          <th>Grade</th>
+          <th>Score</th>
+          <th>Weakest Topic</th>
+          <th class="text-right"></th>
+        </tr>
+      </thead>
 
-              {% if row.latest %}
-                <td>{{ row.latest.percent_score }}%</td>
-                <td>{% if row.weakest_topic %}{{ row.weakest_topic }}{% else %}-{% endif %}</td>
+      <tbody>
+        {% for row in rows %}
+        <tr>
+          <td class="fw-600">{{ row.student.user.username }}</td>
+          <td>{{ row.student.grade_level }}</td>
+
+          {% if row.latest %}
+            <td>
+              <span class="badge badge-primary">
+                {{ row.latest.percent_score|floatformat:0 }}%
+              </span>
+            </td>
+            <td>
+              {% if row.weakest_topic %}
+                <span class="badge badge-soft">{{ row.weakest_topic }}</span>
               {% else %}
-                <td class="text-muted">No diagnostic</td>
-                <td class="text-muted">-</td>
+                <span class="muted">—</span>
               {% endif %}
+            </td>
+          {% else %}
+            <td><span class="badge badge-muted">No diagnostic</span></td>
+            <td><span class="muted">—</span></td>
+          {% endif %}
 
-              <td class="text-end">
-                <a class="btn btn-sm btn-outline-primary" href="/tutor/students/{{ row.student.id }}/">
-                  View
-                </a>
-              </td>
-            </tr>
-          {% endfor %}
-        </tbody>
-      </table>
-    </div>
+          <td class="text-right">
+            <a class="link" href="{% url 'tutor_student_detail' row.student.id %}">View →</a>
+          </td>
+        </tr>
+        {% empty %}
+        <tr>
+          <td colspan="5" class="muted">No students found.</td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
   </div>
 </div>
 {% endblock %}

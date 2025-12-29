@@ -1,93 +1,123 @@
-{% extends "core/student/base_student.html" %}
+{% extends "core/tutor/base_tutor.html" %}
+
 {% block title %}Student Detail{% endblock %}
 
 {% block content %}
-<div class="mb-3">
-  <a class="btn btn-sm btn-outline-secondary" href="/tutor/students/">&larr; Back</a>
+<div class="page-header">
+  <div>
+    <h1 class="page-title">Student Report</h1>
+    <p class="page-subtitle">Diagnostic details for <strong>{{ student.user.username }}</strong></p>
+  </div>
+
+  <div class="page-actions">
+    <a class="btn btn-ghost" href="{% url 'tutor_students' %}">← Back</a>
+  </div>
 </div>
 
-<div class="row g-3">
-  <div class="col-lg-4">
-    <div class="card shadow-sm">
-      <div class="card-body">
-        <h1 class="h5 mb-1">{{ student.user.username }}</h1>
-        <div class="text-muted">Grade: {{ student.grade_level }}</div>
+<div class="grid-2">
+  <!-- Profile -->
+  <div class="card card-pad">
+    <h2 class="section-title">Profile</h2>
 
-        {% if latest %}
-          <hr>
-          <div class="fw-semibold">Latest Result</div>
-          <div>{{ latest.correct_answers }}/{{ latest.total_questions }}</div>
-          <div>{{ latest.percent_score }}%</div>
-        {% else %}
-          <hr>
-          <div class="text-muted">No diagnostic submitted yet.</div>
-        {% endif %}
+    <div class="kv">
+      <div class="kv-row">
+        <div class="kv-k">Student</div>
+        <div class="kv-v">{{ student.user.username }}</div>
+      </div>
+
+      <div class="kv-row">
+        <div class="kv-k">Grade</div>
+        <div class="kv-v">{{ student.grade_level }}</div>
+      </div>
+
+      <div class="kv-row">
+        <div class="kv-k">Latest Diagnostic</div>
+        <div class="kv-v">
+          {% if latest %}
+            <span class="badge badge-primary">{{ latest.percent_score|floatformat:0 }}%</span>
+          {% else %}
+            <span class="badge badge-muted">No diagnostic yet</span>
+          {% endif %}
+        </div>
+      </div>
+
+      <div class="kv-row">
+        <div class="kv-k">Weakest Topic</div>
+        <div class="kv-v">
+          {% if weakest_topic %}
+            <span class="badge badge-soft">{{ weakest_topic }}</span>
+          {% else %}
+            <span class="muted">—</span>
+          {% endif %}
+        </div>
       </div>
     </div>
 
-    <div class="card shadow-sm mt-3">
-      <div class="card-body">
-        <h2 class="h6">Tutor Recommendation</h2>
-        {% if recommendation %}
-          <div><strong>Overall Level:</strong> {{ recommendation.level_label }} ({{ recommendation.overall_percent }}%)</div>
-          <div><strong>Pace:</strong> {{ recommendation.pace_label }}</div>
-          <div class="mt-2"><strong>Demo Plan:</strong> {{ recommendation.focus_message }}</div>
-        {% else %}
-          <div class="text-muted">No recommendation available.</div>
-        {% endif %}
-      </div>
+    <div class="card-foot">
+      <a class="link" href="{% url 'tutor_students' %}">View all students →</a>
     </div>
   </div>
 
-  <div class="col-lg-8">
-    <div class="card shadow-sm mb-3">
-      <div class="card-body">
-        <h2 class="h6 mb-2">Weak Areas (Topic Breakdown)</h2>
+  <!-- Latest attempt -->
+  <div class="card card-pad">
+    <h2 class="section-title">Latest Attempt</h2>
 
-        {% if topic_rows %}
-          <div class="list-group">
-            {% for t in topic_rows %}
-              <div class="list-group-item d-flex justify-content-between align-items-center">
-                <div class="fw-semibold">{{ t.topic }}</div>
-                <div class="text-muted">{{ t.correct }}/{{ t.total }} ({{ t.percent }}%)</div>
-              </div>
-            {% endfor %}
-          </div>
-        {% else %}
-          <div class="text-muted">No topic breakdown available yet.</div>
-        {% endif %}
+    {% if latest %}
+      <div class="stats">
+        <div class="stat">
+          <div class="stat-k">Score</div>
+          <div class="stat-v">{{ latest.percent_score|floatformat:0 }}%</div>
+        </div>
+
+        <div class="stat">
+          <div class="stat-k">Correct</div>
+          <div class="stat-v">{{ latest.correct_answers }}</div>
+        </div>
+
+        <div class="stat">
+          <div class="stat-k">Total</div>
+          <div class="stat-v">{{ latest.total_questions }}</div>
+        </div>
       </div>
-    </div>
 
-    <div class="card shadow-sm">
-      <div class="card-body">
-        <h2 class="h6 mb-2">Latest Attempt Answers</h2>
-
-        {% if answers %}
-          {% for a in answers %}
-            <div class="mb-3">
-              <div class="d-flex justify-content-between">
-                <div class="fw-semibold">{{ a.question.text }}</div>
-                <div>
-                  {% if a.is_correct %}
-                    <span class="badge text-bg-success">Correct</span>
-                  {% else %}
-                    <span class="badge text-bg-danger">Incorrect</span>
-                  {% endif %}
-                </div>
-              </div>
-
-              <div class="text-muted small">
-                Selected: {{ a.selected_option }} | Correct: {{ a.question.correct_option }}
-              </div>
-            </div>
-            <hr>
-          {% endfor %}
-        {% else %}
-          <div class="text-muted">No answers recorded.</div>
-        {% endif %}
+      <div class="muted" style="margin-top: 10px;">
+        Submitted: {{ latest.created_at|date:"M d, Y • H:i" }}
       </div>
-    </div>
+    {% else %}
+      <p class="muted">No diagnostic attempt has been submitted yet.</p>
+    {% endif %}
+  </div>
+</div>
+
+<!-- Attempts history -->
+<div class="card card-pad" style="margin-top: 14px;">
+  <h2 class="section-title">History</h2>
+
+  <div class="table-wrap">
+    <table class="table">
+      <thead>
+        <tr>
+          <th>Date</th>
+          <th>Score</th>
+          <th>Correct</th>
+          <th>Total</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for r in results %}
+        <tr>
+          <td>{{ r.created_at|date:"M d, Y • H:i" }}</td>
+          <td><span class="badge badge-primary">{{ r.percent_score|floatformat:0 }}%</span></td>
+          <td>{{ r.correct_answers }}</td>
+          <td>{{ r.total_questions }}</td>
+        </tr>
+        {% empty %}
+        <tr>
+          <td colspan="4" class="muted">No history yet.</td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
   </div>
 </div>
 {% endblock %}

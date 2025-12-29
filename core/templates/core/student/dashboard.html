@@ -1,37 +1,75 @@
 {% extends "core/student/base_student.html" %}
-
 {% block title %}Dashboard{% endblock %}
 
 {% block content %}
-<div class="row justify-content-center">
-  <div class="col-lg-8">
 
-    <div class="card shadow-sm mb-3">
-      <div class="card-body">
-        <h1 class="h4 mb-1">Student Dashboard</h1>
-        <p class="text-muted mb-0">
-          Welcome, <strong>{{ student.user.username }}</strong>.
-        </p>
-      </div>
+<div class="card">
+  <h1 style="margin-bottom: 6px;">Welcome, {{ request.user.username }} 👋</h1>
+  <p class="card-subtitle" style="margin-bottom:0;">
+    Your tutor will review your diagnostic before the demo class.
+  </p>
+</div>
+
+<div class="card">
+  <div class="card-title">Your Profile</div>
+  <div class="card-subtitle">Basic details used to tailor your learning</div>
+
+  <div class="profile-grid">
+    <div class="profile-item">
+      <span>Grade</span>
+      <strong>{{ student.grade_level }}</strong>
     </div>
 
-    <div class="card shadow-sm">
-      <div class="card-body">
-        <h2 class="h5 mb-3">Latest Diagnostic</h2>
+    <div class="profile-item">
+      <span>Diagnostic</span>
+      {% if latest_result %}
+        <strong><span class="badge badge-success">Completed</span></strong>
+      {% else %}
+        <strong><span class="badge badge-warning">Not started</span></strong>
+      {% endif %}
+    </div>
 
-        {% if latest_result %}
-          <p class="mb-1"><strong>Score:</strong> {{ latest_result.correct_answers }} / {{ latest_result.total_questions }}</p>
-          <p class="mb-1"><strong>Percent:</strong> {{ latest_result.percent_score }}%</p>
-          <p class="mb-0 text-muted">
-            Submitted: {{ latest_result.created_at }}
-          </p>
+    <div class="profile-item">
+      <span>Weakest Topic</span>
+      <strong>
+        {% if weakest_topic %}
+          {{ weakest_topic }}
         {% else %}
-          <p class="text-muted mb-0">No diagnostic submitted yet.</p>
-          <a class="btn btn-primary mt-3" href="{% url 'start_diagnostic' %}">Start Diagnostic</a>
+          —
         {% endif %}
-      </div>
+      </strong>
     </div>
-
   </div>
 </div>
+
+<div class="card">
+  <div class="card-title">Math Diagnostic</div>
+  <div class="card-subtitle">Answer honestly so your tutor can plan your demo class</div>
+
+  {% if latest_result %}
+    <p><strong>Score:</strong> {{ latest_result.percent_score }}%</p>
+    <p style="margin-bottom: 0;">Submitted. Your tutor will review your results.</p>
+
+    <div style="margin-top: 12px;">
+      <a href="{% url 'diagnostic_done' %}">View submission →</a>
+    </div>
+  {% else %}
+    <p style="margin-bottom: 12px;">You haven’t completed the diagnostic yet.</p>
+    <a class="btn-primary" href="{% url 'start_diagnostic' %}" style="display:inline-block; width:auto; padding:10px 16px;">
+      Start Diagnostic
+    </a>
+  {% endif %}
+</div>
+
+<div class="card">
+  <div class="card-title">Next Steps</div>
+  <ul style="margin: 0;">
+    <li>Complete the diagnostic if not done already</li>
+    <li>Your tutor will review results before the demo class</li>
+    <li>Attend your demo class and receive a custom plan</li>
+  </ul>
+</div>
+
+<div class="page-spacer"></div>
+
 {% endblock %}

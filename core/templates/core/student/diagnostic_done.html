@@ -1,24 +1,43 @@
 {% extends "core/student/base_student.html" %}
-{% block title %}Submitted{% endblock %}
+
+{% block title %}Diagnostic Submitted{% endblock %}
 
 {% block content %}
-<div class="card">
-  <h1>Diagnostic Submitted</h1>
-  <p>
-    Thanks. Your tutor will review your answers before your demo class.
-  </p>
+<div class="auth-wrap">
+  <div class="auth-card">
+    <div class="brand-badge">R</div>
 
-  {% if result %}
-    <div style="margin-top: 14px;" class="card">
-      <h2 style="margin-bottom: 6px;">Result Recorded</h2>
-      <div class="small">Score: <strong>{{ result.correct_answers }}</strong> / {{ result.total_questions }}</div>
-      <div class="small">Percent: <strong>{{ result.percent_score }}%</strong></div>
-      <div style="margin-top: 8px;" class="badge-success">Saved successfully</div>
+    <h1 class="auth-title">Submitted ✅</h1>
+    <p class="auth-subtitle">
+      Your tutor will review your results before the demo class.
+    </p>
+
+    <div class="card" style="margin-top: 14px;">
+      <div class="card-body" style="padding: 14px;">
+        <div class="kv">
+          <div class="kv-row">
+            <div class="kv-k">Score</div>
+            <div class="kv-v">{{ result.percent_score|floatformat:0 }}%</div>
+          </div>
+          <div class="kv-row">
+            <div class="kv-k">Correct</div>
+            <div class="kv-v">{{ result.correct_answers }}</div>
+          </div>
+          <div class="kv-row">
+            <div class="kv-k">Total</div>
+            <div class="kv-v">{{ result.total_questions }}</div>
+          </div>
+        </div>
+      </div>
     </div>
-  {% endif %}
 
-  <div style="margin-top: 14px;">
-    <a class="btn" href="/accounts/student/dashboard/">Go to Dashboard</a>
+    <div style="margin-top: 16px;">
+      <a class="btn-primary w-100" href="{% url 'student_dashboard' %}">Go to Dashboard</a>
+    </div>
+
+    <div class="auth-footer">
+      Want to view it again? <a class="link" href="{% url 'student_dashboard' %}">Dashboard</a>
+    </div>
   </div>
 </div>
 {% endblock %}

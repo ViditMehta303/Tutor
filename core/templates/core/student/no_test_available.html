@@ -1,13 +1,20 @@
-<!DOCTYPE html>
-<html>
-  <head>
-    <title>No Diagnostic Available</title>
-  </head>
-  <body>
-    <h1>No Diagnostic Available</h1>
-    <p>
-      A diagnostic test is not available for your grade yet.
-      Please contact the tutor.
+{% extends "core/student/base_student.html" %}
+
+{% block title %}No Test Available{% endblock %}
+
+{% block content %}
+<div class="auth-wrap">
+  <div class="auth-card">
+    <div class="brand-badge">R</div>
+
+    <h1 class="auth-title">No diagnostic available</h1>
+    <p class="auth-subtitle">
+      There isn’t a diagnostic set up for your grade yet.
     </p>
-  </body>
-</html>
+
+    <div style="margin-top: 16px;">
+      <a class="btn-primary w-100" href="{% url 'student_dashboard' %}">Back to Dashboard</a>
+    </div>
+  </div>
+</div>
+{% endblock %}

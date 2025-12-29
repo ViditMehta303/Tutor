@@ -1,24 +1,32 @@
 {% load static %}
+
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>{% block title %}Student{% endblock %}</title>
+  <meta charset="UTF-8">
+  <title>{% block title %}Student{% endblock %} | R M Tutors</title>
+
+  <!-- Main CSS -->
   <link rel="stylesheet" href="{% static 'core/css/main.css' %}">
+
+  <meta name="viewport" content="width=device-width, initial-scale=1">
 </head>
 <body>
-  <div class="navbar">
-    <div class="brand">Tutoring Centre • Student</div>
-    <div class="navlinks">
-      <a href="/accounts/student/dashboard/">Dashboard</a>
-      <a href="/diagnostic/start/">Diagnostic</a>
-      <a href="/accounts/logout/">Logout</a>
-    </div>
-  </div>
 
-  <div class="container">
+  <!-- Top Navigation -->
+  <header style="padding:16px 24px; border-bottom:1px solid #eee;">
+    <strong>R M Tutors · Student</strong>
+    <nav style="float:right;">
+      <a href="/accounts/student/dashboard/">Dashboard</a> |
+      <a href="/diagnostic/start/">Diagnostic</a> |
+      <a href="/accounts/logout/">Logout</a>
+    </nav>
+  </header>
+
+  <!-- Page Content -->
+  <main style="padding:24px;">
     {% block content %}{% endblock %}
-  </div>
+  </main>
+
 </body>
 </html>

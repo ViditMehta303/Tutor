@@ -1,17 +1,50 @@
 <!DOCTYPE html>
-<html>
-  <head>
-    <title>Select Grade</title>
-  </head>
-  <body>
-    <h1>Select Your Grade</h1>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Select Grade | R M Tutors</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  {% load static %}
+  <link rel="stylesheet" href="{% static 'core/css/main.css' %}">
+</head>
+<body>
 
-    <form method="post">
+<div class="auth-wrap">
+  <div class="auth-card">
+    <div class="auth-header">
+      <div class="auth-badge">R</div>
+      <h1 class="auth-title">Select your grade</h1>
+      <p class="auth-subtitle">This helps us show the right math diagnostic level.</p>
+    </div>
+
+    <form method="post" class="auth-form">
       {% csrf_token %}
-      {{ form.as_p }}
-      <button type="submit">Save Grade</button>
-    </form>
 
-    <p><a href="/">Home</a></p>
-  </body>
+      {% if form.non_field_errors %}
+        <div class="alert-error">
+          {{ form.non_field_errors }}
+        </div>
+      {% endif %}
+
+      {% for field in form %}
+        <div class="field">
+          <label class="field-label" for="{{ field.id_for_label }}">{{ field.label }}</label>
+          {{ field }}
+          {% if field.errors %}
+            <div class="field-error">{{ field.errors|striptags }}</div>
+          {% endif %}
+        </div>
+      {% endfor %}
+
+      <button type="submit" class="btn-primary">Continue</button>
+
+      <p class="auth-footnote">
+        Want to go back?
+        <a class="auth-link" href="{% url 'student_dashboard' %}">Dashboard</a>
+      </p>
+    </form>
+  </div>
+</div>
+
+</body>
 </html>

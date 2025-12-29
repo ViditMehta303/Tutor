@@ -1,0 +1,50 @@
+{% extends "core/student/base_student.html" %}
+{% load static %}
+
+{% block title %}Create Account | R M Tutors{% endblock %}
+
+{% block content %}
+<div class="auth-wrap">
+  <div class="auth-card">
+    <div class="auth-header">
+      <div class="auth-badge" aria-hidden="true">R</div>
+      <h1 class="auth-title">Create your account</h1>
+      <p class="auth-subtitle">Join R M Tutors to start your diagnostic and demo class</p>
+    </div>
+
+    {% if messages %}
+      <div class="auth-messages">
+        {% for message in messages %}
+          <div class="auth-alert">{{ message }}</div>
+        {% endfor %}
+      </div>
+    {% endif %}
+
+    <form method="post" class="auth-form" novalidate>
+      {% csrf_token %}
+
+      <div class="field">
+        <label class="field-label" for="id_username">Username</label>
+        <input class="field-input" type="text" name="username" id="id_username" required autocomplete="username" placeholder="e.g., rekha_mehta" />
+      </div>
+
+      <div class="field">
+        <label class="field-label" for="id_password1">Password</label>
+        <input class="field-input" type="password" name="password1" id="id_password1" required autocomplete="new-password" placeholder="Create a strong password" />
+      </div>
+
+      <div class="field">
+        <label class="field-label" for="id_password2">Confirm password</label>
+        <input class="field-input" type="password" name="password2" id="id_password2" required autocomplete="new-password" placeholder="Re-enter password" />
+      </div>
+
+      <button type="submit" class="btn-primary">Create account</button>
+
+      <p class="auth-footnote">
+        Already have an account?
+        <a class="auth-link" href="{% url 'login' %}">Log in</a>
+      </p>
+    </form>
+  </div>
+</div>
+{% endblock %}

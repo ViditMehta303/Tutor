@@ -1,61 +1,88 @@
 {% extends "core/student/base_student.html" %}
+
 {% block title %}Dashboard{% endblock %}
 
 {% block content %}
-<div class="card">
-  <h1>Student Dashboard</h1>
-  <p>Welcome. This dashboard helps you complete the onboarding diagnostic for your demo class.</p>
-</div>
+<div class="rm-dashboard">
 
-<br>
-
-<div style="display:grid; grid-template-columns: 1fr 1fr; gap: 14px;">
-  <div class="card">
-    <h2>Diagnostic Status</h2>
-
-    {% if latest %}
-      <p class="small">Submitted ✅</p>
-      <div style="margin-top: 10px;">
-        <div class="small">Score</div>
-        <div style="font-size: 34px; font-weight: 900;">{{ latest.percent_score }}%</div>
-        <div class="small">({{ latest.correct_answers }}/{{ latest.total_questions }})</div>
-      </div>
-
-      <div style="margin-top: 12px;">
-        <a class="btn" href="/diagnostic/done/">View Submission</a>
-      </div>
-    {% else %}
-      <p class="small">Not submitted yet</p>
-      <p>Complete the diagnostic so your tutor can understand your level.</p>
-
-      <div style="margin-top: 12px;">
-        <a class="btn" href="/diagnostic/start/">Start Diagnostic</a>
-      </div>
-    {% endif %}
-  </div>
-
-  <div class="card">
-    <h2>What happens next?</h2>
-    <p class="small">
-      Your tutor reviews your diagnostic results to plan the best demo class for you.
+  <!-- Header -->
+  <div class="rm-dashboard-header">
+    <h1>Welcome, {{ request.user.username }} 👋</h1>
+    <p class="rm-muted">
+      Your tutor will review your diagnostic before the demo class.
     </p>
-
-    <div style="margin-top: 12px;">
-      <ul class="small" style="margin:0; padding-left: 18px;">
-        <li>We identify your strengths and weak areas.</li>
-        <li>Your demo class is planned at your level.</li>
-        <li>You get a clear learning plan after the demo.</li>
-      </ul>
-    </div>
   </div>
-</div>
 
-<br>
+  <!-- Cards -->
+  <div class="rm-grid">
 
-<div class="card">
-  <h2>Need help?</h2>
-  <p class="small">
-    If you face any issues while registering or submitting the diagnostic, contact the tutoring centre.
-  </p>
+    <!-- Profile Card -->
+    <div class="rm-card">
+      <h2>Your Profile</h2>
+      <p class="rm-muted">Basic details used to tailor your learning</p>
+
+      <div class="rm-row">
+        <span>Grade</span>
+        <strong>{{ student.grade }}</strong>
+      </div>
+
+      <div class="rm-row">
+        <span>Diagnostic</span>
+        <strong>
+          {% if latest_result %}
+            Completed
+          {% else %}
+            Not started
+          {% endif %}
+        </strong>
+      </div>
+
+      <div class="rm-row">
+        <span>Weakest Topic</span>
+        <strong>{{ weakest_topic|default:"—" }}</strong>
+      </div>
+    </div>
+
+    <!-- Diagnostic Card -->
+    <div class="rm-card">
+      <h2>Math Diagnostic</h2>
+      <p class="rm-muted">
+        Answer honestly so your tutor can plan your demo class
+      </p>
+
+      {% if latest_result %}
+        <div class="rm-score">
+          <span>Score</span>
+          <strong>{{ latest_result.percent_score }}%</strong>
+        </div>
+
+        <p class="rm-muted">
+          Submitted. Your tutor will review your results.
+        </p>
+
+        <a class="rm-link" href="#">
+          View submission →
+        </a>
+      {% else %}
+        <p class="rm-muted">You haven’t taken the diagnostic yet.</p>
+
+        <a class="rm-btn rm-btn-primary" href="/diagnostic/start/">
+          Start Diagnostic
+        </a>
+      {% endif %}
+    </div>
+
+  </div>
+
+  <!-- Next Steps -->
+  <div class="rm-card rm-wide">
+    <h2>Next Steps</h2>
+    <ul class="rm-list">
+      <li>Complete the diagnostic if not done already</li>
+      <li>Your tutor will review results before the demo</li>
+      <li>Attend your demo class and receive a custom plan</li>
+    </ul>
+  </div>
+
 </div>
 {% endblock %}
