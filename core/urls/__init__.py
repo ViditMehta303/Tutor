@@ -1,6 +1,6 @@
-from django.urls import include, path
+from django.urls import path, include
 
 urlpatterns = [
-    path("", include("core.urls.student")),
-    path("", include("core.urls.tutor")),
+    path("diagnostic/", include("core.urls.diagnostic")),
+    path("tutor/", include("core.urls.tutor")),
 ]

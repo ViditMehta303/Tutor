@@ -1,34 +1,26 @@
 {% load static %}
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>{% block title %}Tutor{% endblock %} | Prepro</title>
+  <meta charset="UTF-8">
+  <title>{% block title %}Tutor | R M Tutors{% endblock %}</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
   <link rel="stylesheet" href="{% static 'core/css/main.css' %}">
 </head>
 <body>
-  <div class="page">
-    <div class="navbar">
-      <div class="navbar-inner">
-        <div class="brand">
-          <div class="brand-badge">P</div>
-          <div>Prepro · Tutor</div>
-        </div>
 
-        <div class="navlinks">
-          <a href="{% url 'tutor_students' %}"
-             class="{% if request.path|slice:':15' == '/tutor/students' %}active{% endif %}">
-            Students
-          </a>
-          <a href="{% url 'logout' %}">Logout</a>
-        </div>
-      </div>
-    </div>
+<header class="navbar">
+  <div class="brand">R M Tutors</div>
 
-    <div class="container">
-      {% block content %}{% endblock %}
-    </div>
-  </div>
+  <nav class="navlinks">
+    <a href="{% url 'tutor_students' %}">Students</a>
+    <a href="{% url 'logout' %}">Logout</a>
+  </nav>
+</header>
+
+<div class="container">
+  {% block content %}{% endblock %}
+</div>
+
 </body>
 </html>

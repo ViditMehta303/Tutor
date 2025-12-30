@@ -1,75 +1,61 @@
-{% extends "core/student/base_student.html" %}
-{% block title %}Dashboard{% endblock %}
+{% extends "base.html" %}
+{% block title %}Dashboard | R M Tutors{% endblock %}
 
 {% block content %}
+  <h1 class="page-title">Welcome, {{ request.user.username }} 👋</h1>
+  <p class="page-subtitle">Your tutor will review your diagnostic before the demo class.</p>
 
-<div class="card">
-  <h1 style="margin-bottom: 6px;">Welcome, {{ request.user.username }} 👋</h1>
-  <p class="card-subtitle" style="margin-bottom:0;">
-    Your tutor will review your diagnostic before the demo class.
-  </p>
-</div>
+  <div class="grid-2 section">
+    <div class="card">
+      <div class="card-body">
+        <h2 class="card-title">Your Profile</h2>
+        <p class="card-muted">Basic details used to tailor your learning.</p>
 
-<div class="card">
-  <div class="card-title">Your Profile</div>
-  <div class="card-subtitle">Basic details used to tailor your learning</div>
+        <div class="kv">
+          <div class="k">Grade</div>
+          <div class="v">{{ grade|default:"—" }}</div>
 
-  <div class="profile-grid">
-    <div class="profile-item">
-      <span>Grade</span>
-      <strong>{{ student.grade_level }}</strong>
+          <div class="k">Diagnostic</div>
+          <div class="v">{% if diagnostic_completed %}Completed{% else %}Not completed{% endif %}</div>
+
+          <div class="k">Weakest Topic</div>
+          <div class="v">{{ weakest_topic|default:"—" }}</div>
+        </div>
+      </div>
     </div>
 
-    <div class="profile-item">
-      <span>Diagnostic</span>
-      {% if latest_result %}
-        <strong><span class="badge badge-success">Completed</span></strong>
-      {% else %}
-        <strong><span class="badge badge-warning">Not started</span></strong>
-      {% endif %}
-    </div>
+    <div class="card">
+      <div class="card-body">
+        <h2 class="card-title">Next Steps</h2>
+        <p class="card-muted">What happens from here.</p>
 
-    <div class="profile-item">
-      <span>Weakest Topic</span>
-      <strong>
-        {% if weakest_topic %}
-          {{ weakest_topic }}
-        {% else %}
-          —
-        {% endif %}
-      </strong>
+        <ul>
+          <li>Complete the diagnostic if not done already</li>
+          <li>Your tutor will review results before the demo</li>
+          <li>Attend your demo class and receive a custom plan</li>
+        </ul>
+
+        <div style="margin-top:14px; display:flex; gap:10px; flex-wrap:wrap;">
+          <a class="btn btn-primary" href="{% url 'start_diagnostic' %}">Start Diagnostic</a>
+          <a class="btn btn-outline" href="{% url 'select_grade' %}">Update Grade</a>
+        </div>
+      </div>
     </div>
   </div>
-</div>
 
-<div class="card">
-  <div class="card-title">Math Diagnostic</div>
-  <div class="card-subtitle">Answer honestly so your tutor can plan your demo class</div>
+  <div class="card section">
+    <div class="card-body">
+      <h2 class="card-title">Math Diagnostic</h2>
+      <p class="card-muted">Answer honestly so your tutor can plan your demo class.</p>
 
-  {% if latest_result %}
-    <p><strong>Score:</strong> {{ latest_result.percent_score }}%</p>
-    <p style="margin-bottom: 0;">Submitted. Your tutor will review your results.</p>
-
-    <div style="margin-top: 12px;">
-      <a href="{% url 'diagnostic_done' %}">View submission →</a>
+      {% if diagnostic_completed %}
+        <p><strong>Score:</strong> {{ score|default:"—" }}%</p>
+        {% if view_submission_url %}
+          <a class="btn btn-outline" href="{{ view_submission_url }}">View submission →</a>
+        {% endif %}
+      {% else %}
+        <a class="btn btn-primary" href="{% url 'start_diagnostic' %}">Begin Diagnostic</a>
+      {% endif %}
     </div>
-  {% else %}
-    <p style="margin-bottom: 12px;">You haven’t completed the diagnostic yet.</p>
-    <a class="btn-primary" href="{% url 'start_diagnostic' %}" style="display:inline-block; width:auto; padding:10px 16px;">
-      Start Diagnostic
-    </a>
-  {% endif %}
-</div>
-
-<div class="card">
-  <div class="card-title">Next Steps</div>
-  <ul style="margin: 0;">
-    <li>Complete the diagnostic if not done already</li>
-    <li>Your tutor will review results before the demo class</li>
-    <li>Attend your demo class and receive a custom plan</li>
-  </ul>
-</div>
-
-<div class="page-spacer"></div>
-
+  </div>
 {% endblock %}

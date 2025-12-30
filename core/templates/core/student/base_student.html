@@ -1,32 +1,27 @@
 {% load static %}
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <title>{% block title %}Student{% endblock %} | R M Tutors</title>
-
-  <!-- Main CSS -->
-  <link rel="stylesheet" href="{% static 'core/css/main.css' %}">
-
+  <title>{% block title %}Student | R M Tutors{% endblock %}</title>
   <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="stylesheet" href="{% static 'core/css/main.css' %}">
 </head>
 <body>
 
-  <!-- Top Navigation -->
-  <header style="padding:16px 24px; border-bottom:1px solid #eee;">
-    <strong>R M Tutors · Student</strong>
-    <nav style="float:right;">
-      <a href="/accounts/student/dashboard/">Dashboard</a> |
-      <a href="/diagnostic/start/">Diagnostic</a> |
-      <a href="/accounts/logout/">Logout</a>
-    </nav>
-  </header>
+<header class="navbar">
+  <div class="brand">R M Tutors</div>
 
-  <!-- Page Content -->
-  <main style="padding:24px;">
-    {% block content %}{% endblock %}
-  </main>
+  <nav class="navlinks">
+    <a href="{% url 'student_dashboard' %}">Dashboard</a>
+    <a href="{% url 'start_diagnostic' %}">Diagnostic</a>
+    <a href="{% url 'logout' %}">Logout</a>
+  </nav>
+</header>
+
+<div class="container">
+  {% block content %}{% endblock %}
+</div>
 
 </body>
 </html>
