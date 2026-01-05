@@ -1,85 +1,130 @@
-from django.shortcuts import render, redirect
 from django.contrib.auth.decorators import login_required
+from django.shortcuts import get_object_or_404, redirect, render
 
-from core.models import DiagnosticTest, Question, StudentAnswer, DiagnosticResult
+# ✅ CHANGE THESE IMPORTS IF YOUR MODEL NAMES ARE DIFFERENT
+from core.models import  DiagnosticAnswer, DiagnosticQuestion
 from accounts.models import StudentProfile
+
+@login_required
+def select_grade(request):
+    student = get_object_or_404(StudentProfile, user=request.user)
+
+    if request.method == "POST":
+        grade_value = request.POST.get("grade")
+        if grade_value:
+            student.grade = int(grade_value)
+            student.save()
+            return redirect("start_diagnostic")  # ✅ make sure this url name exists
+
+    return render(request, "core/student/select_grade.html", {"student": student})
 
 
 @login_required
-def start_diagnostic(request):
-    # Get logged-in student profile
-    profile = StudentProfile.objects.get(user=request.user)
+def student_dashboard(request):
+    student = get_object_or_404(StudentProfile, user=request.user)
 
-    if profile.grade_level is None:
+    latest_answers = DiagnosticAnswer.objects.filter(student=student)
+
+    total = latest_answers.count()
+    correct = latest_answers.filter(is_correct=True).count()
+
+    score = 0
+    if total > 0:
+        score = round((correct / total) * 100)
+
+    context = {
+        "student": student,
+        "score": score,
+        "correct": correct,
+        "total": total,
+    }
+    return render(request, "core/student/dashboard.html", context)
+
+
+@login_required
+def diagnostic_start(request):
+    profile = get_object_or_404(StudentProfile, user=request.user)
+
+    current_grade = getattr(profile, "grade", None)
+    if current_grade is None:
+        current_grade = getattr(profile, "grade_level", None)
+
+    if current_grade is None:
         return redirect("select_grade")
 
-    # Get the diagnostic test for the student's grade
-    test = DiagnosticTest.objects.filter(grade_level=profile.grade_level).first()
+    return render(request, "core/student/diagnostic_start.html", {"profile": profile})
 
 
-    if not test:
-        return render(request, "core/student/no_test_available.html")
+@login_required
+def diagnostic_test(request):
+    """
+    Shows questions and handles submission.
+    If you already have a different function name for the test page,
+    copy the POST logic from here into yours.
+    """
+    student = get_object_or_404(StudentProfile, user=request.user)
 
-    # 🔒 BLOCK RETAKE: check if result already exists
-    existing_result = DiagnosticResult.objects.filter(
-        student=profile,
-        test=test
-    ).order_by("-created_at").first()
+    if student.grade is None:
+        return redirect("select_grade")
 
-    if existing_result:
-        return render(
-            request,
-            "core/student/diagnostic_done.html",
-            {"result": existing_result},
-        )
+    if student.diagnostic_completed:
+        return redirect("diagnostic_done")
 
-    # Get questions
-    questions = Question.objects.filter(test=test)
+    questions = DiagnosticQuestion.objects.all()
 
     if request.method == "POST":
-        correct = 0
+        # Clear old answers (optional but common)
+        DiagnosticAnswer.objects.filter(student=student).delete()
 
-        for q in questions:
-            selected = request.POST.get(f"question_{q.id}")
+        for question in questions:
+            key = f"q_{question.id}"
+            selected = request.POST.get(key, "")
 
-            is_correct = selected == q.correct_option
-            if is_correct:
-                correct += 1
+            is_correct = False
+            if selected and question.correct_option:
+                is_correct = (selected == question.correct_option)
 
-            StudentAnswer.objects.create(
-                student=profile,
-                question=q,
+            DiagnosticAnswer.objects.create(
+                student=student,
+                question=question,
                 selected_option=selected,
                 is_correct=is_correct,
             )
 
-        result = DiagnosticResult.objects.create(
-            student=profile,
-            test=test,
-            total_questions=questions.count(),
-            correct_answers=correct,
-            percent_score=(correct / questions.count()) * 100,
-        )
+        # ✅ THIS IS THE KEY FIX: mark diagnostic completed
+        student.diagnostic_completed = True
+        student.save()
 
         return redirect("diagnostic_done")
 
-    return render(
-        request,
-        "core/student/diagnostic_test.html",
-        {"questions": questions},
-    )
+    context = {
+        "student": student,
+        "questions": questions,
+    }
+    return render(request, "core/student/diagnostic_test.html", context)
 
 
 @login_required
 def diagnostic_done(request):
-    profile = StudentProfile.objects.get(user=request.user)
+    student = get_object_or_404(StudentProfile, user=request.user)
 
-    result = DiagnosticResult.objects.filter(
-        student=profile
-    ).order_by("-created_at").first()
+    # If not completed, send them back to start
+    if not student.diagnostic_completed:
+        return redirect("start_diagnostic")
 
-    return render(
-        request,
-        "core/student/diagnostic_done.html",
-        {"result": result},
-    )
+    answers = DiagnosticAnswer.objects.filter(student=student)
+
+    total = answers.count()
+    correct = answers.filter(is_correct=True).count()
+
+    score = 0
+    if total > 0:
+        score = round((correct / total) * 100)
+
+    context = {
+        "student": student,
+        "score": score,
+        "correct": correct,
+        "total": total,
+    }
+    return render(request, "core/student/diagnostic_done.html", context)

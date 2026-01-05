@@ -1,36 +1,52 @@
-{% extends "core/student/base_student.html" %}
-{% block title %}Start Diagnostic{% endblock %}
+{% extends "base.html" %}
+{% block title %}Math Diagnostic | R M Tutors{% endblock %}
 
 {% block content %}
-<div class="auth-wrap">
-  <div class="auth-card">
-    <div class="auth-header">
-      <div class="auth-badge">R</div>
-      <h1 class="auth-title">Math Diagnostic</h1>
-      <p class="auth-subtitle">
+<div class="container">
+  <div class="card">
+    <div class="card-body">
+
+      <h1 class="page-title">Math Diagnostic</h1>
+      <p class="page-subtitle">
         Answer honestly. This helps your tutor understand your level before the demo class.
       </p>
-    </div>
 
-    <div class="card" style="margin-top: 14px;">
-      <div style="padding: 14px;">
-        <ul class="clean-list">
-          <li>⏱️ Takes ~5 minutes</li>
-          <li>✅ Multiple-choice</li>
-          <li>🎯 Helps identify weak areas</li>
-        </ul>
-      </div>
-    </div>
+      {% if questions %}
+        <form method="post">
+          {% csrf_token %}
 
-    <div style="margin-top: 16px;">
-      <form method="post">
-        {% csrf_token %}
-        <button class="btn-primary" type="submit">Start Diagnostic</button>
-      </form>
-    </div>
+          {% for q in questions %}
+            <div class="card section">
+              <div class="card-body">
+                <strong>Q{{ forloop.counter }}.</strong> {{ q.text }}
 
-    <div class="auth-footnote">
-      Want to go back? <a href="{% url 'student_dashboard' %}">Dashboard</a>
+                <div class="section">
+                  {% for choice in q.options %}
+                    <label style="display:block; margin-bottom:8px;">
+                      <input type="radio"
+                             name="q_{{ q.id }}"
+                             value="{{ choice }}"
+                             required>
+                      {{ choice }}
+                    </label>
+                  {% endfor %}
+                </div>
+              </div>
+            </div>
+          {% endfor %}
+
+          <button type="submit" class="btn btn-primary btn-full">
+            Submit Diagnostic
+          </button>
+        </form>
+
+      {% else %}
+        <p class="muted">No diagnostic questions available.</p>
+        <a class="btn btn-primary" href="{% url 'student_dashboard' %}">
+          Back to Dashboard
+        </a>
+      {% endif %}
+
     </div>
   </div>
 </div>

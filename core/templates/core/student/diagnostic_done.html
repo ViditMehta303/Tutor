@@ -1,31 +1,47 @@
 {% extends "base.html" %}
-{% block title %}Diagnostic Submitted | R M Tutors{% endblock %}
+{% block title %}Submitted | R M Tutors{% endblock %}
 
 {% block content %}
-  <div class="auth-wrap">
-    <div class="card auth-card">
-      <div class="card-body">
-        <h1 class="card-title">Submitted ✅</h1>
-        <p class="card-muted">Your tutor will review your results before the demo class.</p>
+<div class="container">
+  <div class="card">
+    <div class="card-body">
 
-        <div class="card" style="box-shadow:none; border-radius:14px;">
-          <div class="card-body">
-            <div class="kv">
-              <div class="k">Score</div><div class="v">{{ score|default:"—" }}%</div>
-              <div class="k">Correct</div><div class="v">{{ correct|default:"—" }}</div>
-              <div class="k">Total</div><div class="v">{{ total|default:"—" }}</div>
-            </div>
+      <h1 class="page-title">Submitted ✅</h1>
+      <p class="page-subtitle">
+        Your tutor will review your diagnostic before your demo class.
+      </p>
+
+      <div class="card section" style="box-shadow:none;">
+        <div class="card-body">
+          <h2 class="card-title">Summary</h2>
+          <p class="card-muted">This is what we recorded from your diagnostic.</p>
+
+          <div class="kv">
+            <div class="k">Score</div>
+            <div class="v">{{ score|default:"—" }}%</div>
+
+            <div class="k">Correct</div>
+            <div class="v">{{ correct|default:"—" }}</div>
+
+            <div class="k">Total</div>
+            <div class="v">{{ total|default:"—" }}</div>
+
+            <div class="k">Weak topic</div>
+            <div class="v">{{ weakest_topic|default:"—" }}</div>
           </div>
         </div>
-
-        <div style="margin-top:14px; display:grid; gap:10px;">
-          <a class="btn btn-primary btn-full" href="{% url 'student_dashboard' %}">Go to Dashboard</a>
-        </div>
-
-        <p class="page-subtitle" style="margin-top:12px;">
-          Want to view it again? <a href="{% url 'student_dashboard' %}">Dashboard</a>
-        </p>
       </div>
+
+      <div class="section" style="display:flex; gap:10px; flex-wrap:wrap;">
+        <a class="btn btn-primary" href="{% url 'student_dashboard' %}">Go to Dashboard</a>
+        <a class="btn btn-outline" href="{% url 'select_grade' %}">Update Grade</a>
+      </div>
+
+      <div class="note section">
+        Tip: If you made a mistake, it’s okay. This diagnostic is only to help your tutor plan your demo class.
+      </div>
+
     </div>
   </div>
+</div>
 {% endblock %}

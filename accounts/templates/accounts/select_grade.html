@@ -1,50 +1,31 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <title>Select Grade | R M Tutors</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  {% load static %}
-  <link rel="stylesheet" href="{% static 'core/css/main.css' %}">
-</head>
-<body>
+{% extends "base.html" %}
 
-<div class="auth-wrap">
-  <div class="auth-card">
-    <div class="auth-header">
-      <div class="auth-badge">R</div>
-      <h1 class="auth-title">Select your grade</h1>
-      <p class="auth-subtitle">This helps us show the right math diagnostic level.</p>
-    </div>
+{% block title %}Select Grade | R M Tutors{% endblock %}
 
-    <form method="post" class="auth-form">
+{% block content %}
+  <div class="card">
+    <h1 class="page-title">Select Your Grade</h1>
+    <p class="page-subtitle">This helps us show the right diagnostic questions for your level.</p>
+
+    <form method="post" class="form">
       {% csrf_token %}
 
-      {% if form.non_field_errors %}
-        <div class="alert-error">
-          {{ form.non_field_errors }}
-        </div>
-      {% endif %}
+      <label for="grade" class="label">Grade (1–10)</label>
+      <select id="grade" name="grade" class="input" required>
+        <option value="">Choose grade</option>
+        <option value="1">Grade 1</option>
+        <option value="2">Grade 2</option>
+        <option value="3">Grade 3</option>
+        <option value="4">Grade 4</option>
+        <option value="5">Grade 5</option>
+        <option value="6">Grade 6</option>
+        <option value="7">Grade 7</option>
+        <option value="8">Grade 8</option>
+        <option value="9">Grade 9</option>
+        <option value="10">Grade 10</option>
+      </select>
 
-      {% for field in form %}
-        <div class="field">
-          <label class="field-label" for="{{ field.id_for_label }}">{{ field.label }}</label>
-          {{ field }}
-          {% if field.errors %}
-            <div class="field-error">{{ field.errors|striptags }}</div>
-          {% endif %}
-        </div>
-      {% endfor %}
-
-      <button type="submit" class="btn-primary">Continue</button>
-
-      <p class="auth-footnote">
-        Want to go back?
-        <a class="auth-link" href="{% url 'student_dashboard' %}">Dashboard</a>
-      </p>
+      <button type="submit" class="btn">Continue</button>
     </form>
   </div>
-</div>
-
-</body>
-</html>
+{% endblock %}

@@ -1,6 +1,9 @@
 from django.db import models
 from accounts.models import StudentProfile
 
+from django.conf import settings
+from django.db import models
+
 class DiagnosticTest(models.Model):
     grade_level = models.PositiveSmallIntegerField()
     title = models.CharField(max_length=100)
@@ -61,3 +64,44 @@ class DiagnosticResult(models.Model):
 
     def __str__(self):
         return f"{self.student.user.username} - {self.test.title} - {self.percent_score}%"
+
+
+
+
+
+
+class StudentProfile(models.Model):
+    user = models.OneToOneField(
+        settings.AUTH_USER_MODEL,
+        on_delete=models.CASCADE,
+        related_name="core_student_profile",  # <-- add this
+    )
+    grade = models.IntegerField(null=True, blank=True)
+
+    # ✅ ADD THIS FIELD
+    diagnostic_completed = models.BooleanField(default=False)
+
+    weakest_topic = models.CharField(max_length=255, blank=True, default="")
+
+    def __str__(self):
+        return f"StudentProfile({self.user.username})"
+
+
+# If your diagnostic models live here too, keep them.
+# If they are in another file already, leave them there.
+class DiagnosticQuestion(models.Model):
+    text = models.CharField(max_length=500)
+    correct_option = models.CharField(max_length=255, blank=True, default="")
+
+    def __str__(self):
+        return self.text
+
+
+class DiagnosticAnswer(models.Model):
+    student = models.ForeignKey(StudentProfile, on_delete=models.CASCADE)
+    question = models.ForeignKey(DiagnosticQuestion, on_delete=models.CASCADE)
+    selected_option = models.CharField(max_length=255, blank=True, default="")
+    is_correct = models.BooleanField(default=False)
+
+    def __str__(self):
+        return f"{self.student.user.username} - Q{self.question_id}"

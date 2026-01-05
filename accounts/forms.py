@@ -23,4 +23,4 @@ class StudentRegisterForm(UserCreationForm):
 class SelectGradeForm(forms.ModelForm):
     class Meta:
         model = StudentProfile
-        fields = ["grade_level"]
+        fields = ["grade"]

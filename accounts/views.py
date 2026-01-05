@@ -6,6 +6,7 @@ from accounts.forms import StudentRegisterForm
 from core.models import StudentProfile, DiagnosticResult
 from django.contrib.auth.decorators import login_required
 from django.shortcuts import render, redirect
+from django.shortcuts import get_object_or_404, redirect, render
 
 from .forms import SelectGradeForm
 from .models import StudentProfile
@@ -27,20 +28,20 @@ def register_student(request):
 
     return render(request, "accounts/register.html", {"form": form})
 
-
 @login_required
 def select_grade(request):
-    profile, _created = StudentProfile.objects.get_or_create(user=request.user)
+    profile, created = StudentProfile.objects.get_or_create(user=request.user)
 
     if request.method == "POST":
-        form = SelectGradeForm(request.POST, instance=profile)
-        if form.is_valid():
-            form.save()
-            return redirect("student_dashboard")
-    else:
-        form = SelectGradeForm(instance=profile)
+        grade_value = request.POST.get("grade")
 
-    return render(request, "accounts/select_grade.html", {"form": form})
+        if grade_value:
+            profile.grade = int(grade_value)
+            profile.save()
+            return redirect("start_diagnostic")
+
+    return render(request, "accounts/select_grade.html", {"profile": profile})
+
 
 
 @login_required
