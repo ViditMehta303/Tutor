@@ -24,63 +24,51 @@ def diagnostic_start(request):
 
 @login_required
 def diagnostic_test(request):
-    profile, _ = StudentProfile.objects.get_or_create(user=request.user)
+    # get student profile
+    profile = StudentProfile.objects.get(user=request.user)
 
-    if not profile.grade_level:
-        return redirect("select_grade")
-
-    questions = list(DiagnosticQuestion.objects.filter(grade_level=profile.grade_level).order_by("id"))
-
-    if len(questions) == 0:
-        return redirect("diagnostic_start")
-
-    # index in session (simple paging)
-    index = request.session.get("diag_index", 0)
-    if index < 0:
-        index = 0
-    if index >= len(questions):
-        return redirect("diagnostic_done")
-
-    question = questions[index]
+    # load questions for student's grade
+    questions = DiagnosticQuestion.objects.filter(grade_level=profile.grade_level)
 
     if request.method == "POST":
-        selected = request.POST.get("selected_option")
-        if selected in ["A", "B", "C", "D"]:
+        # clear old answers for re-take (optional but recommended)
+        DiagnosticAnswer.objects.filter(student=profile).delete()
+
+        for question in questions:
+            selected = request.POST.get(f"q_{question.id}")
+            if not selected:
+                # if not answered, skip or handle validation
+                continue
+
             is_correct = (selected == question.correct_option)
 
-            DiagnosticAnswer.objects.update_or_create(
+            DiagnosticAnswer.objects.create(
                 student=profile,
                 question=question,
-                defaults={"selected_option": selected, "is_correct": is_correct},
+                selected_option=selected,
+                is_correct=is_correct,
             )
 
-            request.session["diag_index"] = index + 1
-            return redirect("diagnostic_test")
+        return redirect("diagnostic_done")  # IMPORTANT: redirect after POST
 
-    context = {
-        "question": question,
-        "index": index + 1,
-        "total": len(questions),
-    }
-    return render(request, "core/student/diagnostic_test.html", context)
+    return render(request, "core/student/diagnostic_test.html", {"questions": questions})
+
 
 
 @login_required
 def diagnostic_done(request):
-    profile, _ = StudentProfile.objects.get_or_create(user=request.user)
-
+    profile = StudentProfile.objects.get(user=request.user)
     answers = DiagnosticAnswer.objects.filter(student=profile)
+
     total = answers.count()
     correct = answers.filter(is_correct=True).count()
 
-    # reset session index so they can retake later if you want
-    request.session["diag_index"] = 0
+    return render(
+        request,
+        "core/student/diagnostic_done.html",
+        {"total": total, "correct": correct}
+    )
 
-    context = {
-        "total": total,
-        "correct": correct,
-    }
-    return render(request, "core/student/diagnostic_done.html", context)
 
 @login_required
 def student_dashboard(request):

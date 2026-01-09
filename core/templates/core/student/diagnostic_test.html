@@ -1,35 +1,30 @@
-{% extends "base.html" %}
-{% block title %}Diagnostic Test | R M Tutors{% endblock %}
+<h1>Diagnostic Test</h1>
 
-{% block content %}
-<div class="card">
-  <h1 class="page-title">Question {{ answered_count|add:1 }} of {{ total_count }}</h1>
-  <p class="page-subtitle">{{ question.text }}</p>
+<form method="post">
+  {% csrf_token %}
 
-  <form method="post" class="form">
-    {% csrf_token %}
+  {% if question %}
+    <p><b>{{ question.text }}</b></p>
 
-    <label class="option">
-      <input type="radio" name="option" value="A" required>
-      <span>A) {{ question.option_a }}</span>
-    </label>
+    <label><input type="radio" name="selected_option" value="A"> {{ question.option_a }}</label><br>
+    <label><input type="radio" name="selected_option" value="B"> {{ question.option_b }}</label><br>
+    <label><input type="radio" name="selected_option" value="C"> {{ question.option_c }}</label><br>
+    <label><input type="radio" name="selected_option" value="D"> {{ question.option_d }}</label><br>
 
-    <label class="option">
-      <input type="radio" name="option" value="B" required>
-      <span>B) {{ question.option_b }}</span>
-    </label>
+  {% elif questions %}
+    {% for q in questions %}
+      <div style="margin-bottom: 20px;">
+        <p><b>{{ forloop.counter }}. {{ q.text }}</b></p>
 
-    <label class="option">
-      <input type="radio" name="option" value="C" required>
-      <span>C) {{ question.option_c }}</span>
-    </label>
+        <label><input type="radio" name="q_{{ q.id }}" value="A"> {{ q.option_a }}</label><br>
+        <label><input type="radio" name="q_{{ q.id }}" value="B"> {{ q.option_b }}</label><br>
+        <label><input type="radio" name="q_{{ q.id }}" value="C"> {{ q.option_c }}</label><br>
+        <label><input type="radio" name="q_{{ q.id }}" value="D"> {{ q.option_d }}</label><br>
+      </div>
+    {% endfor %}
+  {% else %}
+    <p>No question found.</p>
+  {% endif %}
 
-    <label class="option">
-      <input type="radio" name="option" value="D" required>
-      <span>D) {{ question.option_d }}</span>
-    </label>
-
-    <button class="btn" type="submit">Submit</button>
-  </form>
-</div>
-{% endblock %}
+  <button type="submit">Submit</button>
+</form>
