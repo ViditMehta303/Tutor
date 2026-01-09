@@ -1,7 +1,7 @@
 from django.urls import path
 from django.contrib.auth import views as auth_views
-
 from . import views
+from core.views.student import student_dashboard
 
 urlpatterns = [
     path("login/", auth_views.LoginView.as_view(template_name="accounts/login.html"), name="login"),
@@ -9,5 +9,5 @@ urlpatterns = [
 
     path("register/", views.register_student, name="register_student"),
     path("student/grade/", views.select_grade, name="select_grade"),
-    path("student/dashboard/", views.student_dashboard, name="student_dashboard"),
+    path("student/dashboard/", student_dashboard, name="student_dashboard"),
 ]

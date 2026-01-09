@@ -1,4 +1,9 @@
 from django.contrib import admin
-from .models import StudentProfile
+from core.models import StudentProfile
 
-admin.site.register(StudentProfile)
+
+#@admin.register(StudentProfile)
+#class StudentProfileAdmin(admin.ModelAdmin):
+ #   list_display = ("user", "grade_level")
+  #  search_fields = ("user__username", "user__email")
+   # list_filter = ("grade_level",)

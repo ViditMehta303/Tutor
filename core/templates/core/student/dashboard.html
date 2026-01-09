@@ -36,7 +36,7 @@
         </ul>
 
         <div style="margin-top:14px; display:flex; gap:10px; flex-wrap:wrap;">
-          <a class="btn btn-primary" href="{% url 'start_diagnostic' %}">Start Diagnostic</a>
+          <a class="btn btn-primary" href="{% url 'diagnostic_start' %}">Start Diagnostic</a>
           <a class="btn btn-outline" href="{% url 'select_grade' %}">Update Grade</a>
         </div>
       </div>
@@ -54,7 +54,7 @@
           <a class="btn btn-outline" href="{{ view_submission_url }}">View submission →</a>
         {% endif %}
       {% else %}
-        <a class="btn btn-primary" href="{% url 'start_diagnostic' %}">Begin Diagnostic</a>
+        <a class="btn btn-primary" href="{% url 'diagnostic_start' %}">Begin Diagnostic</a>
       {% endif %}
     </div>
   </div>

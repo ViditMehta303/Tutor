@@ -1,31 +1,15 @@
 {% extends "base.html" %}
-
 {% block title %}Select Grade | R M Tutors{% endblock %}
 
 {% block content %}
-  <div class="card">
-    <h1 class="page-title">Select Your Grade</h1>
-    <p class="page-subtitle">This helps us show the right diagnostic questions for your level.</p>
+<div class="card">
+  <h1 class="page-title">Select your grade</h1>
+  <p class="page-subtitle">This helps us show you the right diagnostic questions.</p>
 
-    <form method="post" class="form">
-      {% csrf_token %}
-
-      <label for="grade" class="label">Grade (1–10)</label>
-      <select id="grade" name="grade" class="input" required>
-        <option value="">Choose grade</option>
-        <option value="1">Grade 1</option>
-        <option value="2">Grade 2</option>
-        <option value="3">Grade 3</option>
-        <option value="4">Grade 4</option>
-        <option value="5">Grade 5</option>
-        <option value="6">Grade 6</option>
-        <option value="7">Grade 7</option>
-        <option value="8">Grade 8</option>
-        <option value="9">Grade 9</option>
-        <option value="10">Grade 10</option>
-      </select>
-
-      <button type="submit" class="btn">Continue</button>
-    </form>
-  </div>
+  <form method="post" class="form">
+    {% csrf_token %}
+    {{ form.as_p }}
+    <button class="btn" type="submit">Continue</button>
+  </form>
+</div>
 {% endblock %}

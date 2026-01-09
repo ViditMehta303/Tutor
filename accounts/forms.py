@@ -1,26 +1,23 @@
 from django import forms
 from django.contrib.auth.forms import UserCreationForm
-from django.contrib.auth.models import User
-from .models import StudentProfile
+from django.contrib.auth import get_user_model
+
+from core.models import StudentProfile
+
+
+User = get_user_model()
+
 
 class StudentRegisterForm(UserCreationForm):
-    username = forms.CharField(
-        max_length=150,
-        widget=forms.TextInput(attrs={"class": "field-input", "placeholder": "Username"}),
-    )
-
-    password1 = forms.CharField(
-        widget=forms.PasswordInput(attrs={"class": "field-input", "placeholder": "Password"}),
-    )
-
-    password2 = forms.CharField(
-        widget=forms.PasswordInput(attrs={"class": "field-input", "placeholder": "Confirm password"}),
-    )
-
     class Meta:
         model = User
-        fields = ["username", "password1", "password2"]
+        fields = ["username", "email", "password1", "password2"]
+
+
 class SelectGradeForm(forms.ModelForm):
     class Meta:
         model = StudentProfile
-        fields = ["grade"]
+        fields = ["grade_level"]
+        widgets = {
+            "grade_level": forms.Select(attrs={"class": "form-control"}),
+        }

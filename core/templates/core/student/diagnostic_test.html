@@ -1,58 +1,35 @@
-{% extends "core/student/base.html" %}
-
-{% block title %}Diagnostic Test{% endblock %}
+{% extends "base.html" %}
+{% block title %}Diagnostic Test | R M Tutors{% endblock %}
 
 {% block content %}
-<div class="page-header">
-  <div>
-    <h1 class="page-title">Math Diagnostic</h1>
-    <p class="page-subtitle">Answer honestly so your tutor can plan your demo class.</p>
-  </div>
-</div>
+<div class="card">
+  <h1 class="page-title">Question {{ answered_count|add:1 }} of {{ total_count }}</h1>
+  <p class="page-subtitle">{{ question.text }}</p>
 
-<div class="card card-pad">
-  <form method="post">
+  <form method="post" class="form">
     {% csrf_token %}
 
-    {% for q in questions %}
-      <div class="qblock">
-        <div class="qtop">
-          <div class="qnum">Question {{ forloop.counter }}</div>
-          {% if q.topic %}
-            <span class="badge badge-soft">{{ q.get_topic_display }}</span>
-          {% endif %}
-        </div>
+    <label class="option">
+      <input type="radio" name="option" value="A" required>
+      <span>A) {{ question.option_a }}</span>
+    </label>
 
-        <div class="qtext">{{ q.text }}</div>
+    <label class="option">
+      <input type="radio" name="option" value="B" required>
+      <span>B) {{ question.option_b }}</span>
+    </label>
 
-        <div class="choices">
-          <label class="choice">
-            <input type="radio" name="question_{{ q.id }}" value="A" required>
-            <span>{{ q.option_a }}</span>
-          </label>
+    <label class="option">
+      <input type="radio" name="option" value="C" required>
+      <span>C) {{ question.option_c }}</span>
+    </label>
 
-          <label class="choice">
-            <input type="radio" name="question_{{ q.id }}" value="B" required>
-            <span>{{ q.option_b }}</span>
-          </label>
+    <label class="option">
+      <input type="radio" name="option" value="D" required>
+      <span>D) {{ question.option_d }}</span>
+    </label>
 
-          <label class="choice">
-            <input type="radio" name="question_{{ q.id }}" value="C" required>
-            <span>{{ q.option_c }}</span>
-          </label>
-
-          <label class="choice">
-            <input type="radio" name="question_{{ q.id }}" value="D" required>
-            <span>{{ q.option_d }}</span>
-          </label>
-        </div>
-      </div>
-    {% endfor %}
-
-    <div class="form-actions">
-      <button class="btn-primary" type="submit">Submit Diagnostic</button>
-      <a class="btn-ghost" href="{% url 'student_dashboard' %}">Cancel</a>
-    </div>
+    <button class="btn" type="submit">Submit</button>
   </form>
 </div>
 {% endblock %}

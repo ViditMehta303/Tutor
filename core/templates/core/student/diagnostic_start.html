@@ -1,53 +1,21 @@
 {% extends "base.html" %}
-{% block title %}Math Diagnostic | R M Tutors{% endblock %}
+{% block title %}Diagnostic | R M Tutors{% endblock %}
 
 {% block content %}
-<div class="container">
-  <div class="card">
-    <div class="card-body">
+<div class="card">
+  <h1 class="page-title">Math Diagnostic</h1>
+  <p class="page-subtitle">
+    Grade: <strong>{{ profile.grade_level }}</strong>
+  </p>
 
-      <h1 class="page-title">Math Diagnostic</h1>
-      <p class="page-subtitle">
-        Answer honestly. This helps your tutor understand your level before the demo class.
-      </p>
-
-      {% if questions %}
-        <form method="post">
-          {% csrf_token %}
-
-          {% for q in questions %}
-            <div class="card section">
-              <div class="card-body">
-                <strong>Q{{ forloop.counter }}.</strong> {{ q.text }}
-
-                <div class="section">
-                  {% for choice in q.options %}
-                    <label style="display:block; margin-bottom:8px;">
-                      <input type="radio"
-                             name="q_{{ q.id }}"
-                             value="{{ choice }}"
-                             required>
-                      {{ choice }}
-                    </label>
-                  {% endfor %}
-                </div>
-              </div>
-            </div>
-          {% endfor %}
-
-          <button type="submit" class="btn btn-primary btn-full">
-            Submit Diagnostic
-          </button>
-        </form>
-
-      {% else %}
-        <p class="muted">No diagnostic questions available.</p>
-        <a class="btn btn-primary" href="{% url 'student_dashboard' %}">
-          Back to Dashboard
-        </a>
-      {% endif %}
-
+  {% if total_questions == 0 %}
+    <div class="alert">
+      No diagnostic questions exist for this grade yet.
     </div>
-  </div>
+    <a class="btn" href="{% url 'student_dashboard' %}">Go to dashboard</a>
+  {% else %}
+    <p>This diagnostic has <strong>{{ total_questions }}</strong> questions.</p>
+    <a class="btn" href="{% url 'diagnostic_test' %}">Start</a>
+  {% endif %}
 </div>
 {% endblock %}

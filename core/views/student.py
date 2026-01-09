@@ -1,130 +1,102 @@
 from django.contrib.auth.decorators import login_required
-from django.shortcuts import get_object_or_404, redirect, render
+from django.shortcuts import render, redirect, get_object_or_404
+from django.urls import reverse
 
-# ✅ CHANGE THESE IMPORTS IF YOUR MODEL NAMES ARE DIFFERENT
-from core.models import  DiagnosticAnswer, DiagnosticQuestion
-from accounts.models import StudentProfile
-
-@login_required
-def select_grade(request):
-    student = get_object_or_404(StudentProfile, user=request.user)
-
-    if request.method == "POST":
-        grade_value = request.POST.get("grade")
-        if grade_value:
-            student.grade = int(grade_value)
-            student.save()
-            return redirect("start_diagnostic")  # ✅ make sure this url name exists
-
-    return render(request, "core/student/select_grade.html", {"student": student})
-
-
-@login_required
-def student_dashboard(request):
-    student = get_object_or_404(StudentProfile, user=request.user)
-
-    latest_answers = DiagnosticAnswer.objects.filter(student=student)
-
-    total = latest_answers.count()
-    correct = latest_answers.filter(is_correct=True).count()
-
-    score = 0
-    if total > 0:
-        score = round((correct / total) * 100)
-
-    context = {
-        "student": student,
-        "score": score,
-        "correct": correct,
-        "total": total,
-    }
-    return render(request, "core/student/dashboard.html", context)
+from core.models import StudentProfile, DiagnosticQuestion, DiagnosticAnswer
 
 
 @login_required
 def diagnostic_start(request):
-    profile = get_object_or_404(StudentProfile, user=request.user)
+    profile, _ = StudentProfile.objects.get_or_create(user=request.user)
 
-    current_grade = getattr(profile, "grade", None)
-    if current_grade is None:
-        current_grade = getattr(profile, "grade_level", None)
-
-    if current_grade is None:
+    # If no grade picked, send to grade selection
+    if not profile.grade_level:
         return redirect("select_grade")
 
-    return render(request, "core/student/diagnostic_start.html", {"profile": profile})
+    # If no questions exist, still show a friendly page
+    questions_count = DiagnosticQuestion.objects.filter(grade_level=profile.grade_level).count()
+    context = {
+        "grade_level": profile.grade_level,
+        "questions_count": questions_count,
+    }
+    return render(request, "core/student/diagnostic_start.html", context)
 
 
 @login_required
 def diagnostic_test(request):
-    """
-    Shows questions and handles submission.
-    If you already have a different function name for the test page,
-    copy the POST logic from here into yours.
-    """
-    student = get_object_or_404(StudentProfile, user=request.user)
+    profile, _ = StudentProfile.objects.get_or_create(user=request.user)
 
-    if student.grade is None:
+    if not profile.grade_level:
         return redirect("select_grade")
 
-    if student.diagnostic_completed:
+    questions = list(DiagnosticQuestion.objects.filter(grade_level=profile.grade_level).order_by("id"))
+
+    if len(questions) == 0:
+        return redirect("diagnostic_start")
+
+    # index in session (simple paging)
+    index = request.session.get("diag_index", 0)
+    if index < 0:
+        index = 0
+    if index >= len(questions):
         return redirect("diagnostic_done")
 
-    questions = DiagnosticQuestion.objects.all()
+    question = questions[index]
 
     if request.method == "POST":
-        # Clear old answers (optional but common)
-        DiagnosticAnswer.objects.filter(student=student).delete()
+        selected = request.POST.get("selected_option")
+        if selected in ["A", "B", "C", "D"]:
+            is_correct = (selected == question.correct_option)
 
-        for question in questions:
-            key = f"q_{question.id}"
-            selected = request.POST.get(key, "")
-
-            is_correct = False
-            if selected and question.correct_option:
-                is_correct = (selected == question.correct_option)
-
-            DiagnosticAnswer.objects.create(
-                student=student,
+            DiagnosticAnswer.objects.update_or_create(
+                student=profile,
                 question=question,
-                selected_option=selected,
-                is_correct=is_correct,
+                defaults={"selected_option": selected, "is_correct": is_correct},
             )
 
-        # ✅ THIS IS THE KEY FIX: mark diagnostic completed
-        student.diagnostic_completed = True
-        student.save()
-
-        return redirect("diagnostic_done")
+            request.session["diag_index"] = index + 1
+            return redirect("diagnostic_test")
 
     context = {
-        "student": student,
-        "questions": questions,
+        "question": question,
+        "index": index + 1,
+        "total": len(questions),
     }
     return render(request, "core/student/diagnostic_test.html", context)
 
 
 @login_required
 def diagnostic_done(request):
-    student = get_object_or_404(StudentProfile, user=request.user)
+    profile, _ = StudentProfile.objects.get_or_create(user=request.user)
 
-    # If not completed, send them back to start
-    if not student.diagnostic_completed:
-        return redirect("start_diagnostic")
-
-    answers = DiagnosticAnswer.objects.filter(student=student)
-
+    answers = DiagnosticAnswer.objects.filter(student=profile)
     total = answers.count()
     correct = answers.filter(is_correct=True).count()
 
-    score = 0
-    if total > 0:
-        score = round((correct / total) * 100)
+    # reset session index so they can retake later if you want
+    request.session["diag_index"] = 0
 
     context = {
-        "student": student,
-        "score": score,
-        "correct": correct,
         "total": total,
+        "correct": correct,
     }
     return render(request, "core/student/diagnostic_done.html", context)
+
+@login_required
+def student_dashboard(request):
+    """
+    Student dashboard after login.
+    If grade isn't selected yet, force them to pick grade first.
+    """
+    try:
+        profile = StudentProfile.objects.get(user=request.user)
+    except StudentProfile.DoesNotExist:
+        profile = None
+
+    if not profile or not profile.grade_level:
+        return redirect("select_grade")
+
+    context = {
+        "profile": profile,
+    }
+    return render(request, "core/student/dashboard.html", context)

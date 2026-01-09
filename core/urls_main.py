@@ -1,11 +1,16 @@
+# core/urls_main.py
 from django.urls import path
-from core.views import student
+from core.views.student import diagnostic_start, diagnostic_test, diagnostic_done
 
 urlpatterns = [
-    path("accounts/student/grade/", student.select_grade, name="select_grade"),
-    path("accounts/student/dashboard/", student.student_dashboard, name="student_dashboard"),
+    # Existing / canonical names
+    path("diagnostic/", diagnostic_start, name="diagnostic_start"),
+    path("diagnostic/test/", diagnostic_test, name="diagnostic_test"),
+    path("diagnostic/done/", diagnostic_done, name="diagnostic_done"),
 
-    path("diagnostic/", student.diagnostic_start, name="start_diagnostic"),
-    path("diagnostic/test/", student.diagnostic_test, name="diagnostic_test"),
-    path("diagnostic/done/", student.diagnostic_done, name="diagnostic_done"),
+    # Alias names used elsewhere in your code/templates
+    path("diagnostic/", diagnostic_start, name="start_diagnostic"),
+
+    # Optional: if you ever visit /diagnostic/start/ (you did earlier)
+    path("diagnostic/start/", diagnostic_start, name="diagnostic_start_page"),
 ]

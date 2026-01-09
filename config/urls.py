@@ -19,9 +19,9 @@ from django.urls import path, include
 
 urlpatterns = [
     path("admin/", admin.site.urls),
+
     path("accounts/", include("accounts.urls")),
 
-    # ✅ core routes
+    # Core routes (diagnostic etc.)
     path("", include("core.urls_main")),
 ]
-

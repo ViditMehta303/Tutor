@@ -1,0 +1,19 @@
+{% extends "base.html" %}
+{% block title %}Register | R M Tutors{% endblock %}
+
+{% block content %}
+<div class="card">
+  <h1 class="page-title">Welcome to R M Tutors</h1>
+  <p class="page-subtitle">Create your account to begin.</p>
+
+  <form method="post" class="form">
+    {% csrf_token %}
+    {{ form.as_p }}
+    <button class="btn" type="submit">Create account</button>
+  </form>
+
+  <p class="muted" style="margin-top: 12px;">
+    Already have an account? <a href="{% url 'login' %}">Login</a>
+  </p>
+</div>
+{% endblock %}
